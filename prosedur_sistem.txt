@@ -1,0 +1,30 @@
+Prosedur sistem ini merepresentasikan alur logika bisnis dan komputasi yang terintegrasi secara end-to-end, mulai dari interaksi antarmuka pengguna hingga pemrosesan algoritma di sisi server. Alur prosedur sistem dijabarkan secara mendetail melalui tahapan berikut:
+a.
+Tahap Pemilihan Produk dan Inisialisasi Data (Data Fetching)
+Proses dimulai ketika pelanggan membuka katalog dan memilih salah satu produk baju. Secara teknis, sistem backend melakukan query ke database untuk menarik spesifikasi geometris produk tersebut (seperti ukuran Lingkar Dada dan Panjang Baju). Data metrik produk ini disimpan secara sementara (session) untuk nantinya digunakan sebagai parameter pembanding oleh algoritma Machine Learning.
+b.
+Tahap Inisialisasi Parameter Kalibrasi
+Saat pengguna mengaktifkan modul Virtual Tailor, sistem meminta penentuan parameter skala. Pelanggan dapat memilih memasukkan tinggi badan absolut (dalam cm) atau mengonfirmasi penggunaan objek referensi berstandar (seperti kartu KTP). Tahap ini bertujuan untuk membentuk variabel konstanta pembagi yang akan digunakan sistem dalam mengonversi satuan piksel ke dalam satuan centimeter.
+c.
+Tahap Akuisisi Citra dan Pra-pemrosesan
+Sistem mengakuisisi data visual melalui dua jalur yang divalidasi secara ketat:
+•
+Mode Live Webcam: Sistem memanfaatkan WebRTC API dan merender kotak Region of Interest (ROI) pada kanvas browser. Skrip di sisi klien akan memantau posisi pengguna secara real-time; apabila titik anatomi (kepala hingga kaki) telah sejajar dengan ROI, sistem melakukan auto-capture secara otomatis.
+•
+Mode Unggah Foto: Sistem melakukan validasi format berkas dan pre-scan pose ringan untuk memastikan seluruh postur tubuh terlihat utuh sebelum data diproses.
+Citra yang berhasil ditangkap kemudian dikonversi menjadi format teks ter-encode (Base64) dan dikirim ke backend Flask melalui RESTful API HTTP POST.
+d.
+Tahap Komputasi Kecerdasan Buatan (Hybrid AI Pipeline)
+Ini adalah inti pemrosesan data pada backend, yang berjalan melalui sub-proses berurutan:
+•
+Ekstraksi Fitur: MediaPipe Pose menganalisis citra Base64 untuk mendeteksi 33 titik landmark tubuh dan menghitung jarak Euclidean antar-sendi (seperti lebar bahu dan lebar dada) dalam satuan piksel.
+Transformasi Metrik: Jarak piksel tersebut dikalikan dengan rasio kalibrasi (dari tahap b) untuk menghasilkan ukuran linier 2D dalam satuan centimeter.
+•
+Estimasi Dimensi 3D: Mengingat citra bersifat frontal (2D), model Regresi Linear yang telah dilatih mengestimasi variabel kedalaman/tebal tubuh (sagittal depth).
+•
+Kalkulasi Geometri: Nilai lebar dan kedalaman dimasukkan ke dalam rumus aproksimasi elips Ramanujan untuk mendapatkan keliling tubuh (Lingkar Dada) yang presisi.
+•
+Klasifikasi dan Keputusan: Algoritma K-Nearest Neighbor (KNN) mengambil data ukuran pengguna dan membandingkannya dengan data spesifikasi produk (dari tahap a). KNN mengklasifikasikan tipe Body Shape dan menghitung toleransi kelonggaran (Ease Allowance) untuk menentukan Fit Status.
+e.
+Tahap Output dan Integrasi Belanja (Response & Action)
+Hasil komputasi (Angka Antropometri, Body Shape, dan Label Kecocokan seperti “Regular Fit”) dikemas dalam format JSON dan dikembalikan ke frontend. Browser memperbarui antarmuka pengguna secara asinkron tanpa memuat ulang halaman. Apabila pengguna menyetujui hasil tersebut, tindakan klik “Tambah ke Keranjang” akan menyimpan ID Produk sekaligus metadata rekomendasi ukuran dari AI ke dalam basis data sistem, menyelesaikan siklus interaksi sistem.

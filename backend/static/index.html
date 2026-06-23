@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinci Store | Katalog Koleksi Eksklusif</title>
+    <meta name="description" content="Temukan koleksi pakaian premium Vinci Store dengan fitur Virtual Tailor AI untuk pengukuran ukuran yang sempurna.">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================
+           CSS Variables
+        =========================== */
+        :root {
+            --primary: #5c2b29;
+            --primary-light: #7a3a38;
+            --accent: #d88c8f;
+            --accent-hover: #c47679;
+            --text-main: #332323;
+            --text-light: #6b5c5c;
+            --text-muted: #9c8f8f;
+            --bg-body: #fff9f9;
+            --bg-section: #fdf0f0;
+            --border: #f0dcdc;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.14);
+            --radius: 10px;
+            --font: 'Inter', sans-serif;
+        }
+
+        /* ===========================
+           Reset & Base
+        =========================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; }
+        img { display: block; }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===========================
+           Header
+        =========================== */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-mark i {
+            color: var(--accent);
+            font-size: 14px;
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+            height: 100%;
+        }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            height: 100%;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary);
+            border-bottom-color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            color: var(--text-muted);
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .search-bar input {
+            background: var(--bg-section);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 16px 9px 36px;
+            width: 220px;
+            font-size: 14px;
+            font-family: var(--font);
+            outline: none;
+            transition: border-color 0.2s, width 0.3s;
+            color: var(--text-main);
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent);
+            width: 260px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-main);
+            position: relative;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover { background: var(--bg-section); }
+
+        .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: -4px;
+            background: var(--accent);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===========================
+           Hero Banner
+        =========================== */
+        .hero {
+            margin: 32px 0;
+            background: var(--primary);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            min-height: 340px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-bg-pattern {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(201,169,110,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(201,169,110,0.1) 0%, transparent 40%);
+        }
+
+        .hero-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 48px;
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(201,169,110,0.2);
+            border: 1px solid rgba(201,169,110,0.4);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span { color: var(--accent); }
+
+        .hero p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: var(--primary);
+            padding: 13px 28px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-hero-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(201,169,110,0.4);
+        }
+
+        .btn-hero-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--white);
+            padding: 13px 28px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.25);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .btn-hero-secondary:hover {
+            border-color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .hero-visual {
+            position: absolute;
+            right: 48px;
+            bottom: 0;
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 24px;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .num {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .hero-stat .label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* ===========================
+           Category Filters
+        =========================== */
+        .categories-section {
+            margin-bottom: 32px;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+
+        .categories::-webkit-scrollbar { display: none; }
+
+        .cat-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 20px;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-light);
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .cat-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .cat-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
+        /* ===========================
+           Catalog Section
+        =========================== */
+        .catalog-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            gap: 16px;
+        }
+
+        .catalog-title h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .catalog-title p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .sort-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+
+        .sort-bar select {
+            padding: 8px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: var(--white);
+            font-family: var(--font);
+            font-size: 13px;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .sort-bar select:focus { border-color: var(--accent); }
+
+        /* ===========================
+           Product Grid
+        =========================== */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(201,169,110,0.3);
+        }
+
+        .product-img-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            background: var(--bg-section);
+        }
+
+        .product-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-img-wrap img {
+            transform: scale(1.07);
+        }
+
+        .product-img-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 13px;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        }
+
+        .product-img-placeholder i { font-size: 32px; opacity: 0.4; }
+
+        .product-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(26,31,44,0.5) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .product-card:hover .product-overlay { opacity: 1; }
+
+        .quick-view-btn {
+            background: var(--white);
+            color: var(--primary);
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            transform: translateY(8px);
+            transition: transform 0.3s ease, background 0.2s;
+        }
+
+        .product-card:hover .quick-view-btn {
+            transform: translateY(0);
+        }
+
+        .quick-view-btn:hover { background: var(--accent); color: var(--white); }
+
+        .product-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            opacity: 0;
+        }
+
+        .product-card:hover .wishlist-btn { opacity: 1; }
+        .wishlist-btn:hover { color: #ef4444; border-color: #ef4444; }
+
+        .product-info {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .product-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .product-desc-short {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .arrow-link {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .product-card:hover .arrow-link {
+            background: var(--accent);
+            transform: rotate(-45deg);
+        }
+
+        /* ===========================
+           Skeleton Loading
+        =========================== */
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .skeleton-img { height: 260px; }
+        .skeleton-info { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+        .skeleton-line { height: 12px; }
+        .skeleton-line.w-70 { width: 70%; }
+        .skeleton-line.w-50 { width: 50%; }
+        .skeleton-line.w-40 { width: 40%; }
+
+        /* ===========================
+           Empty State
+        =========================== */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.4; display: block; }
+
+        /* ===========================
+           Load More
+        =========================== */
+        .load-more-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 64px;
+        }
+
+        .btn-load-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 36px;
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .btn-load-more:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ===========================
+           Feature Banner
+        =========================== */
+        .feature-banner {
+            background: var(--primary);
+            border-radius: 16px;
+            padding: 40px 48px;
+            margin-bottom: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+        }
+
+        .feature-banner-text h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .feature-banner-text p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .btn-feature {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: var(--primary);
+            padding: 13px 28px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            white-space: nowrap;
+            transition: background 0.2s, transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-feature:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        /* ===========================
+           Footer
+        =========================== */
+        footer {
+            background: var(--white);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            padding: 56px 0 40px;
+        }
+
+        .footer-brand .logo { margin-bottom: 16px; }
+
+        .footer-brand p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.7;
+            max-width: 300px;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-section);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .social-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .footer-col h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-col ul li a {
+            font-size: 14px;
+            color: var(--text-light);
+            transition: color 0.2s;
+        }
+
+        .footer-col ul li a:hover { color: var(--primary); }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ===========================
+           Responsive
+        =========================== */
+        @media (max-width: 1100px) {
+            .product-grid { grid-template-columns: repeat(3, 1fr); }
+            .footer-top { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+        }
+
+        @media (max-width: 860px) {
+            .hero { min-height: 280px; }
+            .hero-visual { display: none; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .feature-banner { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 640px) {
+            nav { display: none; }
+            .search-bar { display: none; }
+            .hero-content { padding: 32px 24px; }
+            .hero h1 { font-size: 1.75rem; }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <div id="navbar-container"></div>
+
+    <main class="container">
+
+        <!-- ========== HERO ========== -->
+        <section class="hero">
+            <div class="hero-bg-pattern"></div>
+            <div class="hero-grid-overlay"></div>
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-sparkles"></i>
+                    Koleksi Terbaru 2026
+                </div>
+                <h1>Temukan Gaya <span>Sempurna</span><br>Untukmu</h1>
+                <p>Pakaian premium dengan teknologi Virtual Tailor AI — pastikan ukuranmu selalu tepat sebelum membeli.</p>
+                <div class="hero-buttons">
+                    <a href="#katalog" class="btn-hero-primary">
+                        <i class="fas fa-th-large"></i>
+                        Lihat Katalog
+                    </a>
+                    <a href="/virtual-tailor" class="btn-hero-secondary">
+                        <i class="fas fa-ruler"></i>
+                        Virtual Tailor
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="num" id="heroProductCount">10+</div>
+                        <div class="label">Produk</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="num">AI</div>
+                        <div class="label">Ukuran Cerdas</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== CATEGORY FILTERS ========== -->
+        <section class="categories-section" id="katalog">
+            <div class="categories" id="categoryList">
+                <button class="cat-btn active" data-filter="all">
+                    <i class="fas fa-border-all"></i> Semua
+                </button>
+                <!-- Dynamic categories injected by JS -->
+            </div>
+        </section>
+
+        <!-- ========== CATALOG ========== -->
+        <section class="catalog">
+            <div class="catalog-header">
+                <div class="catalog-title">
+                    <h2>Katalog Produk</h2>
+                    <p id="productCount">Memuat produk...</p>
+                </div>
+                <div class="sort-bar">
+                    <label for="sortSelect">Urutkan:</label>
+                    <select id="sortSelect">
+                        <option value="default">Terbaru</option>
+                        <option value="price-asc">Harga: Terendah</option>
+                        <option value="price-desc">Harga: Tertinggi</option>
+                        <option value="name-az">Nama: A-Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="product-grid" id="productGrid">
+                <!-- Skeleton loading cards -->
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-img"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton skeleton-line w-70"></div>
+                        <div class="skeleton skeleton-line w-50"></div>
+                        <div class="skeleton skeleton-line w-40"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-img"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton skeleton-line w-70"></div>
+                        <div class="skeleton skeleton-line w-50"></div>
+                        <div class="skeleton skeleton-line w-40"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-img"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton skeleton-line w-70"></div>
+                        <div class="skeleton skeleton-line w-50"></div>
+                        <div class="skeleton skeleton-line w-40"></div>
+                    </div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-img"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton skeleton-line w-70"></div>
+                        <div class="skeleton skeleton-line w-50"></div>
+                        <div class="skeleton skeleton-line w-40"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+                <button class="btn-load-more" id="loadMoreBtn">
+                    <i class="fas fa-chevron-down"></i>
+                    Muat Lebih Banyak
+                </button>
+            </div>
+        </section>
+
+        <!-- ========== FEATURE BANNER ========== -->
+        <div class="feature-banner">
+            <div class="feature-banner-text">
+                <h3><i class="fas fa-ruler-combined" style="color:var(--accent); margin-right:10px;"></i>Tidak Yakin Ukuranmu?</h3>
+                <p>Gunakan Virtual Tailor AI kami. Scan tubuhmu dan kami hitung ukuran yang tepat secara instan.</p>
+            </div>
+            <a href="/virtual-tailor" class="btn-feature">
+                <i class="fas fa-camera"></i>
+                Coba Virtual Tailor
+            </a>
+        </div>
+
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo">
+                        VINCI STORE
+                    </div>
+                    <p>Koleksi pakaian premium dengan teknologi AI Virtual Tailor untuk pengalaman belanja yang lebih personal dan tepat ukuran.</p>
+                    <div class="footer-socials">
+                        <a href="https://www.instagram.com/vincistore_" class="social-btn"><i class="fab fa-instagram"></i></a>
+                        <a href="https://shopee.co.id/vincistore.padang" class="social-btn"><i class="fas fa-shopping-bag"></i></a>
+                        <a href="https://api.whatsapp.com/message/ERX2TQE45XUIH1?autoload=1&app_absent=0" class="social-btn"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Belanja</h4>
+                    <ul>
+                        <li><a href="/">Semua Produk</a></li>
+                        <li><a href="/">Koleksi Terbaru</a></li>
+                        <li><a href="/">Promo & Diskon</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Layanan</h4>
+                    <ul>
+                        <li><a href="#">Virtual Tailor</a></li>
+                        <li><a href="#">Panduan Ukuran</a></li>
+                        <li><a href="#">Retur & Pengembalian</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Informasi</h4>
+                    <ul>
+                        <li><a href="#">Tentang Kami</a></li>
+                        <li><a href="#">Hubungi Kami</a></li>
+                        <li><a href="#">Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 Vinci Store. Semua hak dilindungi.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ========= State =========
+        let allProducts = [];
+        let filteredProducts = [];
+        let currentFilter = 'all';
+        let visibleCount = 8;
+
+        // ========= Fetch Products =========
+        async function loadProducts() {
+            try {
+                const res = await fetch('/api/v1/products');
+                const data = await res.json();
+
+                if (data.success && data.products) {
+                    allProducts = data.products;
+                    document.getElementById('heroProductCount').textContent = allProducts.length + '+';
+                    buildCategoryButtons(allProducts);
+                    applyFiltersAndSort();
+                }
+            } catch (err) {
+                console.error('Failed to load products:', err);
+                document.getElementById('productGrid').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Gagal memuat produk. Pastikan server berjalan.</p>
+                    </div>`;
+                document.getElementById('productCount').textContent = '';
+            }
+        }
+
+        // ========= Category Buttons =========
+        function buildCategoryButtons(products) {
+            // Extract unique categories from description keywords (since no category field)
+            const categories = [
+                { key: 'shirt', label: 'Kemeja & Blouse', icon: 'fa-shirt' },
+                { key: 'busui', label: 'Busui Friendly', icon: 'fa-heart' },
+                { key: 'wudhu', label: 'Wudhu Friendly', icon: 'fa-star' },
+            ];
+
+            const list = document.getElementById('categoryList');
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'cat-btn';
+                btn.dataset.filter = cat.key;
+                btn.innerHTML = `<i class="fas ${cat.icon}"></i> ${cat.label}`;
+                btn.addEventListener('click', () => setFilter(cat.key, btn));
+                list.appendChild(btn);
+            });
+        }
+
+        function setFilter(filter, clickedBtn) {
+            currentFilter = filter;
+            visibleCount = 8;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            clickedBtn.classList.add('active');
+            applyFiltersAndSort();
+        }
+
+        // ========= Sort & Filter =========
+        function applyFiltersAndSort() {
+            const sortVal = document.getElementById('sortSelect').value;
+            let list = [...allProducts];
+
+            // Filter
+            if (currentFilter !== 'all') {
+                list = list.filter(p => {
+                    const desc = (p.description || '').toLowerCase();
+                    if (currentFilter === 'shirt') return true;
+                    if (currentFilter === 'busui') return desc.includes('busui');
+                    if (currentFilter === 'wudhu') return desc.includes('wudhu');
+                    return true;
+                });
+            }
+
+            // Search
+            const q = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (q) {
+                list = list.filter(p =>
+                    (p.name || '').toLowerCase().includes(q) ||
+                    (p.description || '').toLowerCase().includes(q)
+                );
+            }
+
+            // Sort
+            if (sortVal === 'price-asc') list.sort((a, b) => a.price - b.price);
+            else if (sortVal === 'price-desc') list.sort((a, b) => b.price - a.price);
+            else if (sortVal === 'name-az') list.sort((a, b) => a.name.localeCompare(b.name));
+
+            filteredProducts = list;
+            renderProducts();
+        }
+
+        // ========= Render Products =========
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const count = document.getElementById('productCount');
+            const loadWrap = document.getElementById('loadMoreWrap');
+
+            const visible = filteredProducts.slice(0, visibleCount);
+
+            count.textContent = `Menampilkan ${visible.length} dari ${filteredProducts.length} produk`;
+
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <p>Tidak ada produk yang sesuai.</p>
+                    </div>`;
+                loadWrap.style.display = 'none';
+                return;
+            }
+
+            grid.innerHTML = '';
+            visible.forEach((product, i) => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.style.animationDelay = `${i * 50}ms`;
+
+                // Detect product type badge
+                const desc = (product.description || '').toLowerCase();
+                const badge = desc.includes('busui') ? 'Busui Friendly' : 'Tersedia';
+
+                card.innerHTML = `
+                    <div class="product-img-wrap">
+                        ${product.image_url
+                            ? `<img src="${product.image_url}" alt="${product.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'product-img-placeholder\\'><i class=\\'fas fa-image\\'></i><span>Foto Produk</span></div>'">`
+                            : `<div class="product-img-placeholder"><i class="fas fa-image"></i><span>Foto Produk</span></div>`
+                        }
+                        <div class="product-overlay">
+                            <button class="quick-view-btn">
+                                <i class="fas fa-eye"></i> Lihat Detail
+                            </button>
+                        </div>
+                        <span class="product-tag">${badge}</span>
+                        <button class="wishlist-btn" title="Simpan"><i class="far fa-heart"></i></button>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-desc-short">${product.description || ''}</div>
+                        <div class="product-footer">
+                            <div class="product-price">Rp ${product.price.toLocaleString('id-ID')}</div>
+                            <div class="arrow-link"><i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </div>
+                `;
+
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('.wishlist-btn')) {
+                        e.stopPropagation();
+                        toggleWishlist(e.target.closest('.wishlist-btn'));
+                        return;
+                    }
+                    window.location.href = `/product/${product.id}`;
+                });
+
+                grid.appendChild(card);
+            });
+
+            loadWrap.style.display = filteredProducts.length > visibleCount ? 'flex' : 'none';
+        }
+
+        // ========= Wishlist Toggle =========
+        function toggleWishlist(btn) {
+            const icon = btn.querySelector('i');
+            const isActive = icon.classList.contains('fas');
+            icon.classList.toggle('fas', !isActive);
+            icon.classList.toggle('far', isActive);
+            btn.style.color = isActive ? '' : '#ef4444';
+            btn.style.borderColor = isActive ? '' : '#ef4444';
+        }
+
+        // ========= Load More =========
+        document.getElementById('loadMoreBtn').addEventListener('click', () => {
+            visibleCount += 4;
+            renderProducts();
+        });
+
+        // ========= Sort Change =========
+        document.getElementById('sortSelect').addEventListener('change', applyFiltersAndSort);
+
+        // ========= Search =========
+        let searchTimeout;
+        document.addEventListener('input', (e) => {
+            if (e.target && e.target.id === 'searchInput') {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    visibleCount = 8;
+                    applyFiltersAndSort();
+                }, 300);
+            }
+        });
+
+        // ========= Boot =========
+        document.addEventListener('DOMContentLoaded', loadProducts);
+    </script>
+
+    <script src="/static/js/navbar.js"></script>
+</body>
+</html>

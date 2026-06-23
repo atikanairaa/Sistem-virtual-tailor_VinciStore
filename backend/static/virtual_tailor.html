@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Tailor | Vinci Store</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Shared Variables */
+        :root {
+            --primary: #5c2b29;
+            --primary-light: #7a3a38;
+            --accent: #d88c8f;
+            --accent-hover: #c47679;
+            --success: #10b981;
+            --text-main: #332323;
+            --text-light: #6b5c5c;
+            --text-muted: #9c8f8f;
+            --bg-body: #fff9f9;
+            --bg-section: #fdf0f0;
+            --border: #f0dcdc;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
+            --radius: 10px;
+            --font: 'Inter', sans-serif;
+            
+            /* Mapping original variables from styles.css to new variables to preserve backward compatibility for JS if any */
+            --danger: #ef4444;
+        }
+
+        /* Basic Reset & Header (Same as product_detail.html) */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font); background: var(--bg-body); color: var(--text-main); line-height: 1.6; padding-bottom: 80px; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; background: none; border: none; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        
+        header { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 24px; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; letter-spacing: 3px; color: var(--primary); }
+        .logo-mark { width: 32px; height: 32px; background: var(--primary); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        .logo-mark i { color: var(--accent); font-size: 14px; }
+        nav { display: flex; gap: 8px; height: 100%; }
+        nav a { display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 500; color: var(--text-light); height: 100%; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+        nav a:hover, nav a.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .header-actions { display: flex; align-items: center; gap: 16px; }
+        .icon-btn { font-size: 18px; color: var(--text-main); position: relative; padding: 6px; border-radius: 6px; transition: background 0.2s; }
+        .icon-btn:hover { background: var(--bg-section); }
+        .cart-badge { position: absolute; top: -2px; right: -4px; background: var(--primary); color: var(--white); font-size: 10px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        /* Breadcrumb */
+        .breadcrumb { display: flex; align-items: center; gap: 8px; padding: 24px 0 20px; font-size: 13px; color: var(--text-muted); }
+        .breadcrumb a { transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb i { font-size: 10px; }
+        .breadcrumb .current { color: var(--primary); font-weight: 500; }
+
+        /* Virtual Tailor Specific Styles */
+        .vt-hero { text-align: center; margin: 20px 0 40px 0; display: flex; flex-direction: column; align-items: center; }
+        .ai-badge { display: inline-flex; align-items: center; gap: 8px; background-color: var(--primary); color: var(--white); padding: 8px 16px; border-radius: 24px; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 24px; }
+        .vt-hero h1 { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+        .vt-hero p { color: var(--text-light); font-size: 15px; max-width: 600px; line-height: 1.6; }
+
+        .vt-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; align-items: start; }
+        
+        .glass-panel { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 32px; box-shadow: var(--shadow-md); }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: var(--bg-section); padding: 6px; border-radius: 12px; width: fit-content; }
+        .tab-btn { background: transparent; border: none; color: var(--text-light); padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 14px; }
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active { background: var(--white); color: var(--primary); box-shadow: var(--shadow-sm); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease forwards; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Media Container */
+        .media-container { position: relative; width: 100%; aspect-ratio: 4/3; background: var(--bg-section); border-radius: 12px; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
+        #videoFeed, #imagePreview { width: 100%; height: 100%; object-fit: contain; }
+        #overlayCanvas, #drawCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #drawCanvas { cursor: crosshair; z-index: 10; pointer-events: auto; }
+        
+        .draw-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(92, 43, 41, 0.8); color: white; padding: 8px 16px; border-radius: 20px; font-size: 13px; pointer-events: none; z-index: 20; opacity: 0; transition: opacity 0.3s; font-weight: 500; }
+        .draw-hint.visible { opacity: 1; }
+
+        /* File Upload */
+        .file-upload-wrapper { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-section); transition: all 0.3s ease; }
+        .file-upload-wrapper:hover { background: #f0e1e1; }
+        .file-upload-wrapper input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .upload-icon { font-size: 3rem; margin-bottom: 16px; color: var(--primary-light); }
+
+        /* Buttons */
+        .controls-row { display: flex; gap: 16px; margin-top: 24px; justify-content: center; }
+        .btn { padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; border: none; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: var(--white); }
+        .btn-primary:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-primary:disabled { background: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-danger { background: #fee2e2; color: #ef4444; border: 1px solid #f87171; }
+        .btn-danger:hover { background: #ef4444; color: white; }
+        .btn-outline { background: var(--white); color: var(--primary); border: 1.5px solid var(--primary); }
+        .btn-outline:hover { background: var(--bg-section); }
+
+        /* Settings Form */
+        .sidebar h2 { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main); font-size: 13px; }
+        input, select { width: 100%; background: var(--white); border: 1px solid var(--border); color: var(--text-main); padding: 12px 16px; border-radius: 8px; font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s; }
+        input:focus, select:focus { border-color: var(--primary); }
+        
+        #btnResetCalibration { width: 100%; justify-content: center; margin-bottom: 16px; }
+        .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 24px; }
+        .status-uncalibrated { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
+        .status-calibrated { background: #d1fae5; color: #059669; border: 1px solid #a7f3d0; }
+
+        .results-card { margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px; }
+        .results-card h3 { font-size: 16px; color: var(--primary); margin-bottom: 16px; font-weight: 700; }
+        .measurement-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .measurement-item:last-child { border-bottom: none; }
+        .measurement-label { color: var(--text-light); }
+        .measurement-value { font-weight: 700; color: var(--primary); }
+
+        .btn-cart { background-color: var(--accent); color: var(--primary); border: none; padding: 14px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 20px; display: none; transition: background 0.2s; }
+        .btn-cart:hover { background-color: var(--accent-hover); }
+
+        /* Toast */
+        #statusToast { position: fixed; bottom: 24px; right: 24px; padding: 16px 24px; border-radius: 12px; background: var(--primary); color: white; transform: translateY(100px); opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 1000; box-shadow: var(--shadow-lg); font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+        #statusToast.show { transform: translateY(0); opacity: 1; }
+
+        /* Hide Product Catalog visually to remove it from this page */
+        #step1-catalog { display: none !important; }
+
+        @media (max-width: 900px) { .vt-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { nav, .search-bar { display: none; } }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div id="navbar-container"></div>
+
+    <main class="container">
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumb">
+            <a href="/"><i class="fas fa-home"></i> Beranda</a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="current">Virtual Tailor</span>
+        </nav>
+
+        <section class="vt-hero">
+            <div class="ai-badge">
+                <i class="fas fa-wand-magic-sparkles"></i>
+                AI-POWERED FITTING
+            </div>
+            <h1>Virtual Tailor Adaptif</h1>
+            <p>Temukan ukuran yang sempurna untuk Anda menggunakan teknologi analisa citra berbasis AI. Proses hanya membutuhkan beberapa detik.</p>
+        </section>
+
+        <div class="vt-layout">
+            <!-- Main Media Area -->
+            <div class="main-panel glass-panel">
+                
+                <!-- Hidden Catalog Container to satisfy app.js references while removing it from UI -->
+                <div id="step1-catalog">
+                    <div id="productCatalog"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2 style="font-size: 18px; font-weight: 700; color: var(--primary);">Pengambilan Gambar</h2>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" id="tabLive"><i class="fas fa-camera"></i> Kamera Langsung</button>
+                    <button class="tab-btn" id="tabUpload"><i class="fas fa-upload"></i> Unggah Foto</button>
+                </div>
+
+                <div class="media-container" id="mediaContainer">
+                    <!-- Live Video Feed -->
+                    <video id="videoFeed" autoplay playsinline></video>
+                    <canvas id="overlayCanvas"></canvas>
+
+                    <!-- Uploaded Image Preview -->
+                    <div id="contentUpload" class="tab-content" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;">
+                        <div class="file-upload-wrapper" id="uploadWrapper">
+                            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <p style="color: var(--text-muted); font-weight: 500;">Klik atau Tarik Foto ke Sini</p>
+                            <input type="file" id="imageInput" accept="image/jpeg, image/png">
+                        </div>
+                    </div>
+
+                    <img id="imagePreview" src="" alt="Image Preview" style="display: none; position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: contain; pointer-events: none;">
+
+                    <!-- Drawing Canvas (always on top) -->
+                    <canvas id="drawCanvas"></canvas>
+                    <div class="draw-hint" id="drawHint">Tarik garis pada objek referensi</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="controls-row">
+                    <div id="contentLive" class="tab-content active">
+                        <button class="btn btn-primary" id="btnStartWebcam">
+                            <i class="fas fa-play"></i> Mulai Kamera
+                        </button>
+                        <button class="btn btn-danger" id="btnStopWebcam" style="display: none;">
+                            <i class="fas fa-stop"></i> Hentikan Kamera
+                        </button>
+                    </div>
+                    <div id="contentUploadControl" class="tab-content">
+                        <button class="btn btn-primary" id="btnAnalyzePhoto" disabled>
+                            <i class="fas fa-search"></i> Analisa Foto
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar / Settings Area -->
+            <div class="sidebar glass-panel">
+                <h2>Pengaturan Kalibrasi</h2>
+
+                <div class="form-group">
+                    <label for="calibMethod">Metode Kalibrasi</label>
+                    <select id="calibMethod">
+                        <option value="height" selected>Tinggi Badan (Rekomendasi)</option>
+                        <option value="reference">Objek Referensi Manual (Garis)</option>
+                        <option value="reference_auto">Deteksi Kartu Otomatis (8.56cm)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="calibValue" id="calibLabel">Tinggi Badan Anda (cm)</label>
+                    <input type="number" id="calibValue" value="170" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label for="userHeight">Tinggi Badan Aktual (cm)</label>
+                    <input type="number" id="userHeight" value="170">
+                </div>
+
+                <button class="btn btn-outline" id="btnResetCalibration">
+                    <i class="fas fa-sync-alt"></i> Ulangi Kalibrasi
+                </button>
+                <div style="text-align: center;">
+                    <span id="calibrationStatusBadge" class="status-badge status-uncalibrated">⚠️ Belum Dikalibrasi</span>
+                </div>
+
+                <div class="results-card">
+                    <h3>Hasil Pengukuran</h3>
+                    <div id="measurementsResults">
+                        <div class="measurement-item">
+                            <span class="measurement-label">Status</span>
+                            <span class="measurement-value" style="color: var(--text-muted)">Menunggu...</span>
+                        </div>
+                    </div>
+                    <button class="btn-cart" id="btnAddToCart"><i class="fas fa-shopping-bag"></i> Tambah ke Keranjang</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="statusToast"><i class="fas fa-info-circle"></i> <span style="margin-left:8px;">Status message</span></div>
+
+    <!-- Scripts -->
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/ui.js"></script>
+    <script src="/static/js/app.js"></script>
+
+    <script>
+        // Quick toggle for upload action button display based on active tab
+        document.getElementById('tabUpload').addEventListener('click', () => {
+            document.getElementById('contentLive').style.display = 'none';
+            document.getElementById('contentUploadControl').style.display = 'block';
+            document.getElementById('contentUpload').style.display = 'block';
+        });
+        document.getElementById('tabLive').addEventListener('click', () => {
+            document.getElementById('contentLive').style.display = 'block';
+            document.getElementById('contentUploadControl').style.display = 'none';
+            document.getElementById('contentUpload').style.display = 'none';
+        });
+        document.getElementById('contentUploadControl').style.display = 'none';
+    </script>
+    <script src="/static/js/navbar.js"></script>
+</body>
+</html>

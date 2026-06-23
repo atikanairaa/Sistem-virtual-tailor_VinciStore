@@ -1,0 +1,11 @@
+Flask
+flask-cors
+mediapipe
+opencv-python
+numpy
+joblib
+python-dotenv
+pillow
+scikit-learn
+Flask-SQLAlchemy
+PyMySQL

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk | Vinci Store</title>
+    <meta name="description" content="Lihat detail spesifikasi produk, tabel ukuran, dan cek kesesuaian ukuran dengan Virtual Tailor AI.">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================
+           Variables
+        =========================== */
+        :root {
+            --primary: #5c2b29;
+            --primary-light: #7a3a38;
+            --accent: #d88c8f;
+            --accent-hover: #c47679;
+            --success: #10b981;
+            --text-main: #332323;
+            --text-light: #6b5c5c;
+            --text-muted: #9c8f8f;
+            --bg-body: #fff9f9;
+            --bg-section: #fdf0f0;
+            --border: #f0dcdc;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
+            --radius: 10px;
+            --font: 'Inter', sans-serif;
+        }
+
+        /* ===========================
+           Reset
+        =========================== */
+        *, *::before, *::after {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; background: none; border: none; }
+        img { display: block; }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===========================
+           Header
+        =========================== */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-mark i { color: var(--accent); font-size: 14px; }
+
+        nav {
+            display: flex;
+            gap: 8px;
+            height: 100%;
+        }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            height: 100%;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary);
+            border-bottom-color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            font-size: 18px;
+            color: var(--text-main);
+            position: relative;
+            padding: 6px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover { background: var(--bg-section); }
+
+        .cart-badge {
+            position: absolute;
+            top: -2px;
+            right: -4px;
+            background: var(--accent);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===========================
+           Breadcrumb
+        =========================== */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 24px 0 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb a { transition: color 0.2s; }
+        .breadcrumb a:hover { color: var(--primary); }
+        .breadcrumb i { font-size: 10px; }
+        .breadcrumb .current { color: var(--primary); font-weight: 500; }
+
+        /* ===========================
+           Loading State
+        =========================== */
+        #loadingState {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            gap: 16px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===========================
+           PDP Grid
+        =========================== */
+        #pdpContent { display: none; }
+
+        .pdp-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 56px;
+            align-items: start;
+        }
+
+        /* ===========================
+           Left: Images
+        =========================== */
+        .pdp-images {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: sticky;
+            top: 90px;
+        }
+
+        .main-image {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            aspect-ratio: 1 / 1;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .main-image:hover img { transform: scale(1.04); }
+
+        .main-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-muted);
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        }
+
+        .main-image-placeholder i { font-size: 48px; opacity: 0.35; }
+
+        .badge-label {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
+        .badge-label.gold {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .share-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 36px;
+            height: 36px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 13px;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+
+        .share-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        /* ===========================
+           Right: Product Info
+        =========================== */
+        .pdp-info {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* Meta badges */
+        .pdp-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-light);
+            background: var(--white);
+        }
+
+        .tag-pill.gold {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(201,169,110,0.08);
+        }
+
+        /* Title */
+        .pdp-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        /* Pricing */
+        .pdp-pricing {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .price-main {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* Description */
+        .pdp-section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .pdp-desc {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.75;
+        }
+
+        /* Feature badges */
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--bg-section);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .feature-tag i { color: var(--success); }
+
+        /* ===========================
+           Spec Table Container
+        =========================== */
+        .spec-container {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        /* Tabs */
+        .spec-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-section);
+        }
+
+        .spec-tab {
+            flex: 1;
+            padding: 14px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--text-light);
+            border: none;
+            background: transparent;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .spec-tab.active {
+            color: var(--primary);
+            background: var(--white);
+            border-bottom-color: var(--accent);
+        }
+
+        .spec-tab:hover:not(.active) {
+            color: var(--primary);
+            background: rgba(255,255,255,0.6);
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Spec table */
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .spec-table tr:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .spec-table tr:hover { background: #fafbfc; }
+
+        .spec-table td {
+            padding: 14px 20px;
+            font-size: 14px;
+        }
+
+        .spec-table td:first-child {
+            width: 38%;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .spec-table td:last-child {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Size chart visual */
+        .size-chart-header {
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .size-visual {
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .size-card {
+            flex: 1;
+            background: var(--bg-section);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .size-card .sv-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .size-card .sv-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .size-card .sv-unit {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* ===========================
+           Quantity
+        =========================== */
+        .qty-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .qty-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .qty-control {
+            display: flex;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 16px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: var(--bg-section);
+            color: var(--primary);
+        }
+
+        .qty-input {
+            width: 52px;
+            height: 40px;
+            text-align: center;
+            border: none;
+            border-left: 1.5px solid var(--border);
+            border-right: 1.5px solid var(--border);
+            font-size: 15px;
+            font-weight: 600;
+            font-family: var(--font);
+            outline: none;
+            color: var(--primary);
+        }
+
+        /* ===========================
+           Action Buttons
+        =========================== */
+        .pdp-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-primary-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary-action:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(26,31,44,0.25);
+        }
+
+        .btn-primary-action i { font-size: 16px; }
+
+        .btn-secondary-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            background: var(--white);
+            color: var(--primary);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1.5px solid var(--primary);
+            transition: all 0.2s;
+        }
+
+        .btn-secondary-action:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Virtual Tailor CTA */
+        .virtual-tailor-cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 4px;
+        }
+
+        .vt-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(201,169,110,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .vt-text h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .vt-text p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.5;
+        }
+
+        /* ===========================
+           Sticky Add to Cart bar (mobile)
+        =========================== */
+        .sticky-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            padding: 12px 24px;
+            z-index: 99;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+            gap: 12px;
+        }
+
+        /* ===========================
+           Responsive
+        =========================== */
+        @media (max-width: 900px) {
+            .pdp-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .pdp-images { position: static; }
+        }
+
+        @media (max-width: 640px) {
+            nav { display: none; }
+            .pdp-title { font-size: 22px; }
+            .price-main { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <div id="navbar-container"></div>
+
+    <main class="container">
+
+        <!-- ========== BREADCRUMB ========== -->
+        <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
+            <a href="/"><i class="fas fa-home"></i> Beranda</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="/">Katalog</a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="current" id="breadcrumbProduct">Memuat...</span>
+        </nav>
+
+        <!-- ========== LOADING ========== -->
+        <div id="loadingState">
+            <div class="spinner"></div>
+            <p>Memuat detail produk...</p>
+        </div>
+
+        <!-- ========== PRODUCT DETAIL ========== -->
+        <div id="pdpContent">
+            <div class="pdp-grid">
+
+                <!-- ===== LEFT: IMAGES ===== -->
+                <div class="pdp-images">
+                    <div class="main-image" id="mainImageWrap">
+                        <span class="badge-label" id="badgeLabel">Tersedia</span>
+                        <button class="share-btn" onclick="navigator.share && navigator.share({title: document.title, url: location.href})" title="Bagikan">
+                            <i class="fas fa-share-nodes"></i>
+                        </button>
+                        <!-- Image or placeholder injected by JS -->
+                        <div class="main-image-placeholder" id="imagePlaceholder">
+                            <i class="fas fa-image"></i>
+                            <span>Foto Produk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== RIGHT: PRODUCT INFO ===== -->
+                <div class="pdp-info">
+
+                    <!-- Meta -->
+                    <div class="pdp-meta" id="pdpMeta">
+                        <span class="tag-pill"><i class="fas fa-tag"></i> <span id="metaCategory">Pakaian</span></span>
+                        <span class="tag-pill gold" id="busui-tag" style="display:none;">
+                            <i class="fas fa-heart"></i> Busui Friendly
+                        </span>
+                        <span class="tag-pill" id="wudhu-tag" style="display:none;">
+                            <i class="fas fa-star"></i> Wudhu Friendly
+                        </span>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="pdp-title" id="pdpTitle">Nama Produk</h1>
+
+                    <!-- Price -->
+                    <div class="pdp-pricing">
+                        <span class="price-main" id="pdpPrice">Rp 0</span>
+                    </div>
+
+                    <!-- Divider -->
+                    <hr style="border:none; border-top:1px solid var(--border);">
+
+                    <!-- Description -->
+                    <div>
+                        <div class="pdp-section-label">Deskripsi Produk</div>
+                        <p class="pdp-desc" id="pdpDesc">Memuat deskripsi...</p>
+                    </div>
+
+                    <!-- Feature tags -->
+                    <div class="feature-tags" id="featureTags"></div>
+
+                    <!-- ===== SPESIFIKASI (TABEL DB) ===== -->
+                    <div class="spec-container">
+                        <div class="spec-tabs">
+                            <button class="spec-tab active" id="tab-attr" onclick="switchTab('attr')">
+                                <i class="fas fa-list-ul"></i> Atribut Produk
+                            </button>
+                            <button class="spec-tab" id="tab-size" onclick="switchTab('size')">
+                                <i class="fas fa-ruler-combined"></i> Tabel Ukuran
+                            </button>
+                        </div>
+
+                        <!-- Panel: Atribut -->
+                        <div class="tab-panel active" id="panel-attr">
+                            <table class="spec-table" id="attrTable">
+                                <tbody>
+                                    <!-- Rows injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Panel: Ukuran -->
+                        <div class="tab-panel" id="panel-size">
+                            <div class="size-chart-header">
+                                <i class="fas fa-info-circle"></i>
+                                Ukuran berdasarkan dimensi aktual produk.
+                            </div>
+                            <div class="size-visual">
+                                <div class="size-card">
+                                    <div class="sv-label"><i class="fas fa-ruler-horizontal"></i> Lingkar Dada (LD)</div>
+                                    <div class="sv-value" id="svLD">—</div>
+                                    <div class="sv-unit">cm</div>
+                                </div>
+                                <div class="size-card">
+                                    <div class="sv-label"><i class="fas fa-ruler-vertical"></i> Panjang Produk</div>
+                                    <div class="sv-value" id="svPanjang">—</div>
+                                    <div class="sv-unit">cm</div>
+                                </div>
+                            </div>
+                            <table class="spec-table" style="margin-top: 0;">
+                                <tbody>
+                                    <tr>
+                                        <td>Lingkar Dada (LD)</td>
+                                        <td id="sizeLd">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Panjang Produk</td>
+                                        <td id="sizePanjang">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Keterangan</td>
+                                        <td style="color:var(--text-muted); font-size:12px; font-weight:400;">Ukuran merupakan dimensi aktual produk. Kami sarankan cek ukuran dengan Virtual Tailor.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="qty-row">
+                        <span class="qty-label">Jumlah:</span>
+                        <div class="qty-control">
+                            <button class="qty-btn" id="qtyMinus"><i class="fas fa-minus"></i></button>
+                            <input type="text" class="qty-input" id="qtyInput" value="1" readonly>
+                            <button class="qty-btn" id="qtyPlus"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pdp-actions">
+                        <button class="btn-primary-action" id="btnVirtualTailor">
+                            <i class="fas fa-ruler"></i>
+                            Cek Kesesuaian Ukuran (Virtual Tailor)
+                        </button>
+                        <button class="btn-secondary-action" id="btnAddCart">
+                            <i class="fas fa-shopping-bag"></i>
+                            Tambah ke Keranjang
+                        </button>
+                    </div>
+
+                    <!-- VT Info Card -->
+                    <div class="virtual-tailor-cta">
+                        <div class="vt-icon"><i class="fas fa-camera"></i></div>
+                        <div class="vt-text">
+                            <h4>✨ Adaptive Virtual Tailor</h4>
+                            <p>Tidak yakin ukuranmu? Scan tubuhmu dengan AI kami dan temukan kesesuaian ukuran secara instan sebelum membeli.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // ========= Tab Switcher =========
+        function switchTab(tabId) {
+            document.querySelectorAll('.spec-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('panel-' + tabId).classList.add('active');
+        }
+
+        // ========= Quantity Control =========
+        let qty = 1;
+        document.getElementById('qtyMinus').addEventListener('click', () => {
+            if (qty > 1) { qty--; document.getElementById('qtyInput').value = qty; }
+        });
+        document.getElementById('qtyPlus').addEventListener('click', () => {
+            if (qty < 10) { qty++; document.getElementById('qtyInput').value = qty; }
+        });
+
+        // ========= Load Product =========
+        async function loadProduct() {
+            const pathParts = window.location.pathname.split('/');
+            const productId = parseInt(pathParts[pathParts.length - 1]);
+
+            if (!productId || isNaN(productId)) {
+                showError('ID produk tidak valid.');
+                return;
+            }
+
+            try {
+                // Try single product endpoint first, fallback to list
+                let product = null;
+                const singleRes = await fetch(`/api/v1/products/${productId}`);
+                if (singleRes.ok) {
+                    const singleData = await singleRes.json();
+                    if (singleData.success && singleData.product) {
+                        product = singleData.product;
+                    }
+                }
+
+                if (!product) {
+                    // Fallback: load all and find
+                    const allRes = await fetch('/api/v1/products');
+                    const allData = await allRes.json();
+                    if (allData.success && allData.products) {
+                        const found = allData.products.find(p => p.id === productId);
+                        if (found) product = found;
+                    }
+                }
+
+                if (!product) {
+                    showError('Produk tidak ditemukan.');
+                    return;
+                }
+
+                renderProduct(product);
+
+            } catch (err) {
+                console.error(err);
+                showError('Gagal memuat detail produk.');
+            }
+        }
+
+        function showError(msg) {
+            const ls = document.getElementById('loadingState');
+            ls.innerHTML = `
+                <i class="fas fa-exclamation-circle" style="font-size:40px; color:var(--text-muted);"></i>
+                <p style="color:var(--text-muted);">${msg}</p>
+                <a href="/" style="color:var(--accent); font-weight:600; margin-top:8px;">← Kembali ke Katalog</a>
+            `;
+        }
+
+        function renderProduct(p) {
+            // Hide loading, show content
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('pdpContent').style.display = 'block';
+
+            // Breadcrumb
+            document.getElementById('breadcrumbProduct').textContent = p.name;
+            document.title = `${p.name} | Vinci Store`;
+
+            // Product image
+            const imgWrap = document.getElementById('mainImageWrap');
+            if (p.image_url) {
+                const placeholder = document.getElementById('imagePlaceholder');
+                const img = document.createElement('img');
+                img.src = p.image_url;
+                img.alt = p.name;
+                img.onerror = () => { img.remove(); };
+                imgWrap.insertBefore(img, placeholder);
+                placeholder.remove();
+            }
+
+            // Badge
+            const desc = (p.description || '').toLowerCase();
+            const badgeEl = document.getElementById('badgeLabel');
+            if (desc.includes('busui')) {
+                badgeEl.textContent = 'Busui Friendly';
+                badgeEl.classList.add('gold');
+            }
+
+            // Meta tags
+            if (desc.includes('busui')) {
+                document.getElementById('busui-tag').style.display = 'inline-flex';
+            }
+            if (desc.includes('wudhu')) {
+                document.getElementById('wudhu-tag').style.display = 'inline-flex';
+            }
+
+            // Title & Price
+            document.getElementById('pdpTitle').textContent = p.name;
+            document.getElementById('pdpPrice').textContent =
+                'Rp ' + p.price.toLocaleString('id-ID');
+
+            // Description
+            document.getElementById('pdpDesc').textContent = p.description || '—';
+
+            // Feature tags from description keywords
+            const featureMap = [
+                { key: 'busui',    icon: 'fa-heart',       label: 'Busui Friendly' },
+                { key: 'wudhu',    icon: 'fa-star',        label: 'Wudhu Friendly' },
+                { key: 'furing',   icon: 'fa-layer-group', label: 'Full Furing' },
+                { key: 'inner',    icon: 'fa-circle-half-stroke', label: 'Inner Terpisah' },
+                { key: 'katun',    icon: 'fa-leaf',        label: 'Bahan Katun' },
+                { key: 'import',   icon: 'fa-globe',       label: 'Bahan Import' },
+            ];
+
+            const ftEl = document.getElementById('featureTags');
+            featureMap.forEach(f => {
+                if (desc.includes(f.key)) {
+                    const el = document.createElement('span');
+                    el.className = 'feature-tag';
+                    el.innerHTML = `<i class="fas ${f.icon}"></i> ${f.label}`;
+                    ftEl.appendChild(el);
+                }
+            });
+
+            // ===== ATRIBUT TABLE (FROM DATABASE) =====
+            const tbody = document.querySelector('#attrTable tbody');
+
+            // Parse bahan from description
+            const bahanMatch = p.description.match(/bahan\s*:?\s*([^.]+)/i);
+            const bahanStr = bahanMatch ? bahanMatch[1].trim() : '—';
+
+            const attrs = [
+                { label: 'ID Produk',  value: `#VNC-${String(p.id).padStart(4,'0')}` },
+                { label: 'Nama Produk', value: p.name },
+                { label: 'Bahan',      value: bahanStr },
+                { label: 'Harga',      value: 'Rp ' + p.price.toLocaleString('id-ID') },
+                { label: 'Busui Friendly', value: desc.includes('busui') && !desc.includes('tdk busui') && !desc.includes('tidak busui') ? '✓ Ya' : '✗ Tidak' },
+                { label: 'Wudhu Friendly', value: desc.includes('wudhu') ? '✓ Ya' : '✗ Tidak' },
+            ];
+
+            attrs.forEach(a => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${a.label}</td><td>${a.value}</td>`;
+                tbody.appendChild(tr);
+            });
+
+            // ===== SIZE CHART TABLE =====
+            if (p.size_chart) {
+                const sc = p.size_chart;
+                document.getElementById('svLD').textContent      = sc.ld_produk;
+                document.getElementById('svPanjang').textContent = sc.panjang_produk;
+                document.getElementById('sizeLd').textContent    = sc.ld_produk + ' cm';
+                document.getElementById('sizePanjang').textContent = sc.panjang_produk + ' cm';
+            } else {
+                // If using all-products endpoint (no size_chart), show N/A
+                document.getElementById('svLD').textContent = 'N/A';
+                document.getElementById('svPanjang').textContent = 'N/A';
+                document.getElementById('sizeLd').textContent = 'Tidak tersedia';
+                document.getElementById('sizePanjang').textContent = 'Tidak tersedia';
+            }
+
+            // ===== BUTTONS =====
+            document.getElementById('btnVirtualTailor').addEventListener('click', async () => {
+                const btn = document.getElementById('btnVirtualTailor');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+                try {
+                    const res = await fetch('/api/v1/session/product', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ product_id: p.id })
+                    });
+
+                    if (res.ok) {
+                        window.location.href = '/virtual-tailor';
+                    } else {
+                        alert('Gagal menyimpan sesi. Coba lagi.');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-ruler"></i> Cek Kesesuaian Ukuran (Virtual Tailor)';
+                    }
+                } catch (e) {
+                    alert('Gagal terhubung ke server.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-ruler"></i> Cek Kesesuaian Ukuran (Virtual Tailor)';
+                }
+            });
+
+            document.getElementById('btnAddCart').addEventListener('click', () => {
+                // Visual feedback
+                const btn = document.getElementById('btnAddCart');
+                btn.innerHTML = '<i class="fas fa-check"></i> Ditambahkan!';
+                btn.style.background = 'var(--success)';
+                btn.style.color = 'var(--white)';
+                btn.style.borderColor = 'var(--success)';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-shopping-bag"></i> Tambah ke Keranjang';
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            });
+        }
+
+        // ========= Boot =========
+        document.addEventListener('DOMContentLoaded', loadProduct);
+    </script>
+
+    <script src="/static/js/navbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja | Vinci Store</title>
+    <meta name="description" content="Lihat dan kelola produk di keranjang belanja Vinci Store Anda.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===========================
+           CSS Variables (Same as index.html)
+        =========================== */
+        :root {
+            --primary: #5c2b29;
+            --primary-light: #7a3a38;
+            --accent: #d88c8f;
+            --accent-hover: #c47679;
+            --danger: #ef4444;
+            --text-main: #332323;
+            --text-light: #6b5c5c;
+            --text-muted: #9c8f8f;
+            --bg-body: #fff9f9;
+            --bg-section: #fdf0f0;
+            --border: #f0dcdc;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.14);
+            --radius: 10px;
+            --font: 'Inter', sans-serif;
+        }
+
+        /* ===========================
+           Reset & Base
+        =========================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; background: none; border: none; }
+        img { display: block; }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===========================
+           Page Header Section
+        =========================== */
+        .page-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 40px 0 48px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(216,140,143,0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .page-hero-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+        .page-hero-text h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+        .page-hero-text p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+        }
+        .btn-continue {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .btn-continue:hover { background: rgba(255,255,255,0.25); }
+
+        /* ===========================
+           Cart Layout
+        =========================== */
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 28px;
+            align-items: start;
+            padding-bottom: 64px;
+        }
+
+        /* ===========================
+           Promo Banner
+        =========================== */
+        .promo-banner {
+            background: linear-gradient(135deg, var(--bg-section), #fce8e8);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            color: var(--primary);
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .promo-banner i { color: var(--accent); font-size: 16px; }
+
+        /* ===========================
+           Cart Items
+        =========================== */
+        .cart-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cart-item {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+        .cart-item:hover { box-shadow: var(--shadow-md); }
+
+        .btn-remove {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--text-muted);
+            font-size: 13px;
+            transition: all 0.2s;
+            background: var(--bg-section);
+        }
+        .btn-remove:hover { background: #fee2e2; color: var(--danger); }
+
+        .item-img {
+            width: 110px;
+            height: 130px;
+            background: var(--bg-section);
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 8px;
+        }
+
+        .tag-category {
+            display: inline-block;
+            padding: 3px 10px;
+            background: var(--bg-section);
+            color: var(--text-light);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            width: fit-content;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.4;
+        }
+
+        .item-badges {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .badge-tailor {
+            background: var(--primary);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .badge-fit {
+            background: var(--bg-section);
+            color: var(--primary);
+            border: 1px solid var(--border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .badge-no-tailor {
+            background: var(--bg-section);
+            color: var(--text-muted);
+            border: 1px dashed var(--border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .item-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .price-total {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* ===========================
+           Empty Cart
+        =========================== */
+        .empty-cart {
+            text-align: center;
+            padding: 80px 24px;
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .empty-cart .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-section);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .empty-cart .empty-icon i { font-size: 32px; color: var(--accent); }
+        .empty-cart h3 { font-size: 18px; color: var(--primary); margin-bottom: 8px; }
+        .empty-cart p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+        .btn-shop-now {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-shop-now:hover { background: var(--primary-light); }
+
+        /* ===========================
+           Summary Card (Sticky Right)
+        =========================== */
+        .summary-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            position: sticky;
+            top: 88px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--white);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .summary-body { padding: 20px; }
+
+        .s-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+        .s-row .s-name {
+            color: var(--text-muted);
+            max-width: 170px;
+            line-height: 1.4;
+        }
+        .s-row .s-price { font-weight: 600; white-space: nowrap; }
+
+        .s-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 16px 0;
+        }
+
+        .s-ongkir {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+        .s-ongkir .free-label {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-section);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-top: 16px;
+        }
+        .total-label { font-size: 14px; font-weight: 700; color: var(--primary); }
+        .total-val { font-size: 18px; font-weight: 800; color: var(--primary); }
+
+        .btn-checkout {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--white);
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+            transition: opacity 0.2s, transform 0.1s;
+            letter-spacing: 0.3px;
+        }
+        .btn-checkout:hover { opacity: 0.92; transform: translateY(-1px); }
+        .btn-checkout:active { transform: translateY(0); }
+
+        /* ===========================
+           Responsive
+        =========================== */
+        @media (max-width: 1024px) {
+            .cart-layout { grid-template-columns: 1fr; }
+            .summary-card { position: static; }
+        }
+        @media (max-width: 640px) {
+            .cart-item { flex-direction: column; }
+            .item-img { width: 100%; height: 180px; }
+            .page-hero-inner { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container page-hero-inner">
+            <div class="page-hero-text">
+                <h1><i class="fas fa-shopping-cart" style="margin-right: 10px;"></i>Keranjang Belanja</h1>
+                <p id="cartCount">Memuat produk...</p>
+            </div>
+            <a href="/" class="btn-continue">
+                <i class="fas fa-arrow-left"></i> Lanjut Belanja
+            </a>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="cart-layout" id="cartLayout">
+
+            <!-- Left: Item List -->
+            <div class="cart-items-section">
+                <div class="promo-banner">
+                    <i class="fas fa-truck"></i>
+                    <span>Selamat! Anda mendapatkan <strong>gratis ongkos kirim</strong></span>
+                </div>
+                <div class="cart-items-list" id="cartItemsList">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div>
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <i class="fas fa-receipt"></i> Ringkasan Belanja
+                    </div>
+                    <div class="summary-body">
+                        <div id="summaryItems"></div>
+
+                        <hr class="s-divider">
+
+                        <div class="s-ongkir">
+                            <span><i class="fas fa-truck" style="margin-right: 6px; color: var(--text-muted);"></i>Ongkos Kirim</span>
+                            <span class="free-label"><i class="fas fa-check-circle"></i> Gratis</span>
+                        </div>
+
+                        <div class="total-row">
+                            <span class="total-label">Total</span>
+                            <span class="total-val" id="summaryTotal">Rp 0</span>
+                        </div>
+
+                        <button class="btn-checkout">
+                            <i class="fas fa-lock"></i> Checkout Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', fetchCart);
+
+        const formatRupiah = (n) =>
+            new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n);
+
+        async function fetchCart() {
+            try {
+                const res = await fetch('/api/v1/cart');
+                const data = await res.json();
+                if (data.success) renderCart(data.items);
+            } catch (err) { console.error(err); }
+        }
+
+        async function removeItem(cartId) {
+            const btn = document.querySelector(`[data-cart-id="${cartId}"]`);
+            if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+            try {
+                const res = await fetch(`/api/v1/cart/${cartId}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) fetchCart();
+            } catch (err) { console.error(err); }
+        }
+
+        function renderCart(items) {
+            const listEl = document.getElementById('cartItemsList');
+            const summaryEl = document.getElementById('summaryItems');
+            const countEl = document.getElementById('cartCount');
+            const totalEl = document.getElementById('summaryTotal');
+
+            countEl.textContent = `${items.length} produk di keranjang Anda`;
+
+            if (items.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <h3>Keranjang Anda masih kosong</h3>
+                        <p>Pilih produk dari katalog dan gunakan Virtual Tailor<br>untuk mendapatkan rekomendasi ukuran yang tepat.</p>
+                        <a href="/" class="btn-shop-now"><i class="fas fa-tshirt"></i> Lihat Katalog</a>
+                    </div>`;
+                summaryEl.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 12px 0;">Belum ada produk</p>';
+                totalEl.textContent = 'Rp 0';
+                return;
+            }
+
+            let listHtml = '', summaryHtml = '', total = 0;
+
+            items.forEach(item => {
+                const p = item.product;
+                total += p.price;
+
+                let badgesHtml = '';
+                if (item.body_shape || item.fit_status) {
+                    if (item.body_shape)
+                        badgesHtml += `<span class="badge-tailor"><i class="fas fa-ruler-combined"></i> ${item.body_shape}</span>`;
+                    if (item.fit_status)
+                        badgesHtml += `<span class="badge-fit"><i class="fas fa-check"></i> ${item.fit_status}</span>`;
+                } else {
+                    badgesHtml = `<span class="badge-no-tailor"><i class="fas fa-minus"></i> Tanpa Virtual Tailor</span>`;
+                }
+
+                listHtml += `
+                <div class="cart-item">
+                    <button class="btn-remove" onclick="removeItem(${item.id_cart})" data-cart-id="${item.id_cart}" title="Hapus">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="item-img">
+                        <img src="${p.image_url || '/static/placeholder.png'}" alt="${p.name}" onerror="this.style.display='none'">
+                    </div>
+                    <div class="item-details">
+                        <span class="tag-category">${p.category}</span>
+                        <h3 class="item-title">${p.name}</h3>
+                        <div class="item-badges">${badgesHtml}</div>
+                        <div class="item-footer">
+                            <span class="price-total">${formatRupiah(p.price)}</span>
+                        </div>
+                    </div>
+                </div>`;
+
+                summaryHtml += `
+                <div class="s-row">
+                    <span class="s-name">${p.name}</span>
+                    <span class="s-price">${formatRupiah(p.price)}</span>
+                </div>`;
+            });
+
+            listEl.innerHTML = listHtml;
+            summaryEl.innerHTML = summaryHtml;
+            totalEl.textContent = formatRupiah(total);
+        }
+    </script>
+
+    <script src="/static/js/navbar.js"></script>
+</body>
+</html>
