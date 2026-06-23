@@ -1,0 +1,24 @@
+# --- Framework Web & API ---
+Flask
+flask-cors
+
+# --- Database & ORM ---
+Flask-SQLAlchemy
+PyMySQL
+
+# --- Data Science, Image Processing, & Machine Learning ---
+mediapipe
+opencv-python
+numpy
+joblib
+pillow
+scikit-learn
+
+# --- Konfigurasi Environment ---
+python-dotenv
+
+# --- Fitur Baru: Autentikasi & Keamanan (Login, Register, Google Auth) ---
+werkzeug
+Flask-Login
+Authlib
+requests
