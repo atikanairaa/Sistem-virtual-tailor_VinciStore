@@ -192,10 +192,12 @@ def prescan():
         result = pose_service.pose_detector.detect(img)
         landmarks = pose_service.pose_detector.get_landmarks(result)
         if landmarks is None:
-            return jsonify({'success': True, 'aligned': False, 'message': 'No pose detected'}), 200
+            return jsonify({'success': True, 'aligned ': False, 'message': 'Tubuh tidak terdeteksi'}), 200
             
         aligned = pose_service.pose_detector.are_shoulders_hips_visible(landmarks)
-        return jsonify({'success': True, 'aligned': aligned, 'message': 'Aligned' if aligned else 'Shoulders/Hips not visible'}), 200
+        feet_visible = landmarks[27].visibility > 0.5 or landmarks[28].visibility > 0.5
+
+        return jsonify({'success': True, 'aligned': aligned and feet_visible, 'message': 'Posisi tegak' if (aligned and feet_visible) else 'Pastikan kaki terlihat di kamera'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -204,16 +206,19 @@ def prescan():
 def analyze():
     try:
         product = session.get('selected_product')
-        if not product: return jsonify({'error': 'Select product first'}), 400
+        if not product: return jsonify({'error': 'Pilih produk terlebih dahulu'}), 400
             
         data = request.get_json()
         image_b64 = data.get('image', '').split(',')[1] if ',' in data.get('image', '') else data.get('image', '')
+        u_height = data.get('user_height_cm')
+        if not u_height:
+            return jsonify({'error': 'Input tinggi badan diperlukan'}), 400
         
         analysis_request = PoseAnalysisRequest(
             image_bytes=base64.b64decode(image_b64),
-            calibration_type=CalibrationType(data.get('calibration_type', 'height')),
-            calibration_value_cm=float(data.get('calibration_value_cm', 0)),
-            user_height_cm=float(data.get('user_height_cm', 165)),
+            calibration_type=CalibrationType.HEIGHT,
+            calibration_value_cm=float(u_height),
+            user_height_cm=float(u_height),
             dress_size_cm=product['target_dress_size_cm']
         )
         
