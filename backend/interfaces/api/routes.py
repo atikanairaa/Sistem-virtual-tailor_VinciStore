@@ -44,12 +44,15 @@ def get_products():
         products = product_repo.get_all_products()
         products_data = []
         for p in products:
+            sc = p.size_charts[0] if p.size_charts else None
             products_data.append({
                 "id": p.id_product,
                 "name": p.nama_produk,
                 "description": p.deskripsi,
                 "price": float(p.harga),
-                "image_url": p.gambar_url
+                "image_url": p.gambar_url,
+                "ld": sc.ld_produk if sc else "—",
+                "panjang": sc.panjang_produk if sc else "—"
             })
         return jsonify({'success': True, 'products': products_data}), 200
     except Exception as e:
