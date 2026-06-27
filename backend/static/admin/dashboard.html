@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Vinci Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #5c2b29; --primary-light: #7a3a38; --accent: #d88c8f;
+            --bg-admin: #f1f5f9; --white: #ffffff; --text: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-admin); display: flex; color: var(--text); }
+        
+        /* Sidebar */
+        .sidebar { width: 280px; background: var(--primary); color: white; height: 100vh; position: fixed; padding: 40px 20px; display: flex; flex-direction: column; }
+        .logo-admin { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 2px; margin-bottom: 50px; font-size: 18px; }
+        .nav-admin { flex-grow: 1; }
+        .nav-item { padding: 14px 18px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; margin-bottom: 8px; color: rgba(255,255,255,0.7); }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
+        .nav-item.active { border-left: 4px solid var(--accent); border-radius: 4px 12px 12px 4px; background: rgba(255,255,255,0.1); }
+        
+        /* Main */
+        .main { margin-left: 280px; width: 100%; padding: 40px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        
+        /* Conversion Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px; }
+        .stat-card { background: white; padding: 24px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .stat-card .label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .stat-card .value { font-size: 28px; font-weight: 800; color: var(--primary); }
+        .stat-card.highlight { background: var(--primary); color: white; }
+        .stat-card.highlight .value, .stat-card.highlight .label { color: white; }
+
+        /* Table */
+        .content-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid #f1f5f9; color: #64748b; font-size: 13px; }
+        td { padding: 18px 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        
+        .btn-add { background: var(--primary); color: white; padding: 12px 24px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-add:hover { background: var(--primary-light); transform: translateY(-2px); }
+
+        .popularity-bar { height: 8px; background: #eee; border-radius: 10px; width: 100px; overflow: hidden; display: inline-block; margin-right: 10px; }
+        .popularity-fill { height: 100%; background: var(--accent); border-radius: 10px; }
+        .badge-count { padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 12px; }
+        .bg-light-maroon { background: #fdf2f2; color: var(--primary); }
+        .bg-light-gold { background: #fffbeb; color: #b45309; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo-admin">
+            <img src="/static/logo.png" width="35" style="border-radius: 50%;"> 
+            VINCI ADMIN
+        </div>
+        <nav class="nav-admin">
+            <div class="nav-item active" onclick="location.href='/admin/dashboard'">
+                <i class="fas fa-chart-pie"></i> Ringkasan
+            </div>
+            <div class="nav-item" onclick="location.href='/admin/products'">
+                <i class="fas fa-box"></i> Kelola Produk
+            </div>
+            <div class="nav-item" onclick="window.open('/', '_blank')">
+                <i class="fas fa-eye"></i> Lihat Toko
+            </div>
+        </nav>
+        <div class="nav-item" style="margin-top: auto;" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> Keluar
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="top-bar">
+            <h1>Dashboard Ringkasan</h1>
+            <div id="currentDate" style="color: #64748b;">Statistik Real-time Vinci Store</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="label">Total Scan AI</span>
+                <div class="value" id="valScans">0</div>
+            </div>
+            <div class="stat-card">
+                <span class="label">Produk di Keranjang</span>
+                <div class="value" id="valCart">0</div>
+            </div>
+            <div class="stat-card">
+                <span class="label">Produk Dipesan (Ordered)</span>
+                <div class="value" id="valOrdered">0</div>
+            </div>
+            <div class="stat-card highlight">
+                <span class="label">User Conversion Rate</span>
+                <div class="value" id="valConv">0%</div>
+                <small style="font-size: 10px; opacity: 0.8;">% User Scan yang lanjut Order</small>
+            </div>
+        </div>
+
+         <!-- Grafik Harian -->
+        <div class="content-card" style="margin-bottom: 30px;">
+            <h3>Tren Aktivitas 7 Hari Terakhir</h3>
+            <div style="height: 300px; position: relative;">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3>Daftar Aktivitas Produk</h3>
+            <p style="font-size: 13px; color: #64748b;">Menampilkan jumlah pemakaian Virtual Tailor untuk setiap produk.</p>
+            <table id="productTable">
+                <thead>
+                    <tr>
+                        <th colspan="2">Produk</th>
+                        <th>Interaksi AI</th>
+                        <th>Masuk Keranjang</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data akan diisi oleh fetch -->
+                    <tr><td colspan="4" style="text-align:center; color: #94a3b8;">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        let trendChart = null;
+
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/v1/admin/stats', { credentials: 'same-origin' });
+                if (!res.ok) throw new Error("Gagal mengambil data");
+                
+                const data = await res.json();
+
+                // 1. Update Card Numbers
+                document.getElementById('valScans').innerText = data.summary.total_scans || 0;
+                document.getElementById('valCart').innerText = data.summary.total_in_cart || 0;
+                document.getElementById('valOrdered').innerText = data.summary.total_ordered || 0;
+                document.getElementById('valConv').innerText = (data.summary.conversion_rate || 0) + '%';
+
+                // 2. Render Grafik
+                if (data.trends) renderChart(data.trends);
+
+                // 3. Render Tabel Produk
+                const tbody = document.querySelector('#productTable tbody');
+                if (data.activity && data.activity.length > 0) {
+                    tbody.innerHTML = data.activity.map(p => `
+                        <tr>
+                            <td style="width: 50px;"><img src="${p.img}" width="40" height="40" style="border-radius: 6px; object-fit: cover;"></td>
+                            <td><strong>${p.name}</strong></td>
+                            <td><span class="badge-count bg-light-maroon"><i class="fas fa-magic"></i> ${p.scans} Scan</span></td>
+                            <td><span class="badge-count bg-light-gold"><i class="fas fa-shopping-basket"></i> ${p.carts} Item</span></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:20px;">Belum ada data.</td></tr>';
+                }
+
+            } catch (e) { 
+                console.error("Dashboard Load Error:", e);
+                // Hanya tampilkan alert jika benar-benar gagal total
+            }
+        }
+
+        function renderChart(trendData) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            if (trendChart) trendChart.destroy();
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: trendData.map(d => d.date),
+                    datasets: [
+                        {
+                            label: 'Scan AI',
+                            data: trendData.map(d => d.scans),
+                            borderColor: '#5c2b29',
+                            backgroundColor: 'rgba(92, 43, 41, 0.1)',
+                            fill: true, tension: 0.4
+                        },
+                        {
+                            label: 'Keranjang',
+                            data: trendData.map(d => d.carts),
+                            borderColor: '#64748b',
+                            borderDash: [5, 5], tension: 0.4
+                        },
+                        {
+                            label: 'Dipesan',
+                            data: trendData.map(d => d.orders),
+                            borderColor: '#d88c8f',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+        }
+
+        async function handleLogout() {
+            if (confirm("Keluar dari sistem admin?")) {
+                await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'same-origin' });
+                window.location.href = '/login';
+            }
+        }
+
+        window.onload = loadStats;
+    </script>
+</body>
+</html>

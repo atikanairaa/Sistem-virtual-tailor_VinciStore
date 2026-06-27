@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun | Vinci Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5c2b29; --accent: #d88c8f; --accent-hover: #c47679;
+            --text-main: #332323; --text-light: #6b5c5c; --bg-body: #fff9f9;
+            --border: #f0dcdc; --white: #ffffff; --font: 'Inter', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font); background: var(--bg-body); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px 20px; }
+        .reg-card { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; max-width: 480px; box-shadow: 0 10px 25px rgba(92, 43, 41, 0.05); text-align: center; }
+        .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; letter-spacing: 3px; color: var(--primary); margin-bottom: 24px; }
+        .logo-mark { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: var(--primary); display: flex; align-items: center; justify-content: center; border: 2px solid var(--border); }
+        .logo-mark img { width: 100%; height: 100%; object-fit: cover; }
+        h2 { font-size: 24px; color: var(--primary); margin-bottom: 8px; font-weight: 700; }
+        p.subtitle { font-size: 14px; color: var(--text-light); margin-bottom: 30px; }
+        .form-group { text-align: left; margin-bottom: 18px; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i { position: absolute; left: 14px; color: var(--accent); font-size: 14px; }
+        .form-input { width: 100%; padding: 12px 16px 12px 42px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s; background: #fffafa; }
+        .form-input:focus { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px rgba(216,140,143,0.1); }
+        .btn-reg { width: 100%; padding: 14px; background: var(--primary); color: white; border-radius: 10px; font-weight: 700; border: none; margin-top: 10px; cursor: pointer; transition: 0.3s; }
+        .btn-reg:hover { background: #7a3a38; transform: translateY(-1px); }
+        .footer-text { margin-top: 24px; font-size: 14px; color: var(--text-light); }
+        .footer-text a { color: var(--accent); font-weight: 700; text-decoration: none; }
+        .alert { display: none; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; text-align: left; background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    </style>
+</head>
+<body>
+    <div class="reg-card">
+        <div class="logo">
+            <div class="logo-mark"><img src="/static/logo.png" alt="Logo"></div>
+            VINCI STORE
+        </div>
+        <h2>Daftar Akun</h2>
+        <p class="subtitle">Bergabunglah untuk akses fitur selengkapnya.</p>
+        <div id="regAlert" class="alert"></div>
+        <form id="regForm">
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <!-- Tambah minlength dan pattern -->
+                    <input type="text" id="username" class="form-input" 
+                        placeholder="Min. 4 karakter" required minlength="4">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" class="form-input" 
+                        placeholder="contoh@mail.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Nomor HP</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <!-- Validasi hanya angka 10-14 digit -->
+                    <input type="tel" id="phone" class="form-input" 
+                        placeholder="0812xxxxxxxx" pattern="[0-9]{10,14}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Kata Sandi</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <!-- WAJIB minlength 6 -->
+                    <input type="password" id="password" class="form-input" 
+                        placeholder="Minimal 6 karakter" required minlength="6">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-reg" id="btnSubmit">Buat Akun Sekarang</button>
+        </form>
+        <p class="footer-text">Sudah punya akun? <a href="/login">Masuk di sini</a></p>
+    </div>
+    <script>
+        document.getElementById('regForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            const alertBox = document.getElementById('regAlert');
+            
+            // --- 1. AMBIL NILAI DAN BERSIHKAN (TRIM) ---
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+
+            // --- 2. VALIDASI FRONTEND (BENTENG PERTAMA) ---
+            alertBox.style.display = 'none';
+
+            if (username.length < 3) {
+                alertBox.textContent = "Gagal: Nama pengguna minimal harus 3 karakter.";
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            if (username.includes(" ")) {
+                alertBox.textContent = "Gagal: Nama pengguna tidak boleh mengandung spasi.";
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                alertBox.textContent = "Gagal: Kata sandi minimal harus 6 karakter.";
+                alertBox.style.display = 'block';
+                return;
+            }
+
+            // --- 3. UI STATE: LOADING ---
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+            btn.disabled = true;
+
+            const payload = {
+                username: username,
+                email: email,
+                phone: phone,
+                password: password
+            };
+
+            try {
+                // --- 4. KIRIM KE API ---
+                const res = await fetch('/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    // Berhasil: Beri notifikasi cantik dan pindah halaman
+                    alert("Registrasi Berhasil! Silakan masuk dengan akun baru Anda.");
+                    window.location.href = '/login';
+                } else {
+                    // Gagal dari sisi Backend (Email duplikat, dll)
+                    alertBox.textContent = data.message;
+                    alertBox.style.display = 'block';
+                }
+            } catch (err) {
+                // Gagal karena koneksi/server mati
+                console.error("Register Error:", err);
+                alertBox.textContent = "Terjadi kesalahan koneksi ke server. Coba lagi nanti.";
+                alertBox.style.display = 'block';
+            } finally {
+                // Kembalikan tombol ke kondisi semula
+                btn.innerHTML = 'Buat Akun Sekarang';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

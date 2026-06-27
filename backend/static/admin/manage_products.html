@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Kelola Produk | Vinci Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5c2b29; --primary-light: #7a3a38; --accent: #d88c8f;
+            --bg-admin: #f1f5f9; --white: #ffffff; --text: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-admin); display: flex; color: var(--text); }
+        
+        /* Sidebar */
+        .sidebar { width: 280px; background: var(--primary); color: white; height: 100vh; position: fixed; padding: 40px 20px; display: flex; flex-direction: column; }
+        .logo-admin { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 2px; margin-bottom: 50px; font-size: 18px; }
+        .nav-admin { flex-grow: 1; }
+        .nav-item { padding: 14px 18px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; margin-bottom: 8px; color: rgba(255,255,255,0.7); }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
+        .nav-item.active { border-left: 4px solid var(--accent); border-radius: 4px 12px 12px 4px; background: rgba(255,255,255,0.1); }
+        
+        /* Main */
+        .main { margin-left: 280px; width: 100%; padding: 40px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        
+        /* Conversion Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px; }
+        .stat-card { background: white; padding: 24px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .stat-card .label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .stat-card .value { font-size: 28px; font-weight: 800; color: var(--primary); }
+        .stat-card.highlight { background: var(--primary); color: white; }
+        .stat-card.highlight .value, .stat-card.highlight .label { color: white; }
+
+        /* Table */
+        .content-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid #f1f5f9; color: #64748b; font-size: 13px; }
+        td { padding: 18px 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        
+        .btn-add { background: var(--primary); color: white; padding: 12px 24px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-add:hover { background: var(--primary-light); transform: translateY(-2px); }
+        
+        /* Modal CRUD */
+        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+        .modal-card { background:white; padding:30px; border-radius:15px; width:450px; }
+        input, textarea { width:100%; padding:10px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing: border-box; }
+        .btn-save { background: var(--primary); color:white; border:none; padding:12px; width:100%; border-radius:8px; margin-top:15px; font-weight:700; cursor:pointer; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo-admin">
+            <img src="/static/logo.png" width="35" style="border-radius: 50%;"> 
+            VINCI ADMIN
+        </div>
+        <nav class="nav-admin">
+            <div class="nav-item" onclick="location.href='/admin/dashboard'">
+                <i class="fas fa-chart-pie"></i> Ringkasan
+            </div>
+            <div class="nav-item active" onclick="location.href='/admin/products'">
+                <i class="fas fa-box"></i> Kelola Produk
+            </div>
+            <div class="nav-item" onclick="window.open('/', '_blank')">
+                <i class="fas fa-eye"></i> Lihat Toko
+            </div>
+        </nav>
+        <div class="nav-item" style="margin-top: auto;" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> Keluar
+        </div>
+    </aside>
+
+    <main class="main">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+            <h1>Manajemen Produk</h1>
+            <button onclick="openModal()" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer">+ Tambah Produk</button>
+        </div>
+
+        <div style="background:white; padding:20px; border-radius:15px; margin-top:20px;">
+            <table id="productTable" style="width:100%; border-collapse:collapse;">
+                <h3>Daftar Produk</h3>
+                <thead><tr style="text-align:left; border-bottom:2px solid #eee"><th>Produk</th><th>Harga</th><th>LD/P</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- MODAL -->
+    <div id="pModal" class="modal">
+        <div class="modal-card">
+            <h3 id="modalTitle">Tambah Produk</h3>
+            <form id="pForm">
+                <input type="hidden" id="pId">
+                <label>Nama Produk</label><input type="text" id="pName" required>
+                <label>Harga (IDR)</label><input type="number" id="pPrice" required>
+                <label>Link Gambar</label><input type="text" id="pImg" required>
+                <div style="display:flex; gap:10px">
+                    <div><label>LD</label><input type="number" id="pLd" required></div>
+                    <div><label>Panjang</label><input type="number" id="pPj" required></div>
+                </div>
+                <label>Deskripsi</label><textarea id="pDesc"></textarea>
+                <button type="submit" class="btn-save">Simpan Data</button>
+                <button type="button" onclick="closeModal()" style="width:100%; background:none; border:none; margin-top:10px; cursor:pointer">Batal</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal Logic
+        function openModal(data = null) {
+            document.getElementById('pModal').style.display = 'flex';
+            if(data) {
+                document.getElementById('modalTitle').innerText = "Edit Produk";
+                document.getElementById('pId').value = data.id;
+                document.getElementById('pName').value = data.name;
+                document.getElementById('pPrice').value = data.price;
+                document.getElementById('pImg').value = data.image_url;
+                document.getElementById('pDesc').value = data.description;
+                document.getElementById('pLd').value = data.size_charts?.[0]?.ld_produk || '';
+                document.getElementById('pPj').value = data.size_charts?.[0]?.panjang_produk || '';
+            } else {
+                document.getElementById('pForm').reset();
+                document.getElementById('pId').value = "";
+                document.getElementById('modalTitle').innerText = "Tambah Produk";
+            }
+        }
+        function closeModal() { document.getElementById('pModal').style.display = 'none'; }
+
+        // CRUD Logic
+        async function loadProducts() {
+            const res = await fetch('/api/v1/products');
+            const data = await res.json();
+            document.querySelector('#productTable tbody').innerHTML = data.products.map(p => `
+                <tr style="border-bottom:1px solid #eee">
+                    <td><b>${p.name}</b></td>
+                    <td>Rp ${p.price.toLocaleString()}</td>
+                    <td>${p.target_dress_size_cm} cm</td>
+                    <td>
+                        <button onclick="editProduct(${p.id})" style="color:blue; border:none; background:none; cursor:pointer"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteProduct(${p.id})" style="color:red; border:none; background:none; cursor:pointer"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function editProduct(id) {
+            const res = await fetch(`/api/v1/products/${id}`);
+            const data = await res.json();
+            openModal(data.product);
+        }
+
+        document.getElementById('pForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('pId').value;
+            const payload = {
+                name: document.getElementById('pName').value,
+                price: document.getElementById('pPrice').value,
+                image_url: document.getElementById('pImg').value,
+                description: document.getElementById('pDesc').value,
+                ld: document.getElementById('pLd').value,
+                panjang: document.getElementById('pPj').value
+            };
+            
+            const url = id ? `/api/v1/admin/products/update/${id}` : `/api/v1/admin/products/add`;
+            const method = id ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method, headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload), credentials: 'same-origin'
+            });
+            if(res.ok) { alert("Berhasil!"); location.reload(); }
+        };
+
+        async function deleteProduct(id) {
+            if(confirm('Hapus produk?')) {
+                await fetch(`/api/v1/admin/products/delete/${id}`, { method: 'DELETE', credentials: 'same-origin' });
+                location.reload();
+            }
+        }
+
+        window.onload = loadProducts;
+    </script>
+</body>
+</html>

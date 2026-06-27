@@ -117,25 +117,6 @@
         }
 
         /* ===========================
-           Promo Banner
-        =========================== */
-        .promo-banner {
-            background: linear-gradient(135deg, var(--bg-section), #fce8e8);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--accent);
-            color: var(--primary);
-            padding: 14px 20px;
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
-        .promo-banner i { color: var(--accent); font-size: 16px; }
-
-        /* ===========================
            Cart Items
         =========================== */
         .cart-items-list {
@@ -348,18 +329,6 @@
             margin: 16px 0;
         }
 
-        .s-ongkir {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            color: var(--text-light);
-            margin-bottom: 4px;
-        }
-        .s-ongkir .free-label {
-            color: #16a34a;
-            font-weight: 600;
-        }
-
         .total-row {
             display: flex;
             justify-content: space-between;
@@ -417,7 +386,7 @@
                 <p id="cartCount">Memuat produk...</p>
             </div>
             <a href="/" class="btn-continue">
-                <i class="fas fa-arrow-left"></i> Lanjut Belanja
+                <i class="fas fa-arrow-left"></i> Kembali
             </a>
         </div>
     </section>
@@ -427,10 +396,6 @@
 
             <!-- Left: Item List -->
             <div class="cart-items-section">
-                <div class="promo-banner">
-                    <i class="fas fa-truck"></i>
-                    <span>Selamat! Anda mendapatkan <strong>gratis ongkos kirim</strong></span>
-                </div>
                 <div class="cart-items-list" id="cartItemsList">
                     <!-- Rendered dynamically -->
                 </div>
@@ -447,19 +412,28 @@
 
                         <hr class="s-divider">
 
-                        <div class="s-ongkir">
-                            <span><i class="fas fa-truck" style="margin-right: 6px; color: var(--text-muted);"></i>Ongkos Kirim</span>
-                            <span class="free-label"><i class="fas fa-check-circle"></i> Gratis</span>
-                        </div>
-
                         <div class="total-row">
                             <span class="total-label">Total</span>
                             <span class="total-val" id="summaryTotal">Rp 0</span>
                         </div>
 
-                        <button class="btn-checkout">
-                            <i class="fas fa-lock"></i> Checkout Sekarang
-                        </button>
+                        <!-- Tambahkan Penjelasan/Instruksi di atas tombol -->
+                        <div style="background: var(--bg-body); border-radius: 10px; padding: 16px; margin-top: 20px; border: 1px dashed var(--accent);">
+                            <p style="font-size: 12px; color: var(--text-main); line-height: 1.6; text-align: justify; margin: 0;">
+                                <i class="fas fa-info-circle" style="color: var(--accent); margin-right: 5px;"></i>
+                                Sistem <b>Virtual Tailor AI</b> kami telah membantu Anda menemukan ukuran yang paling presisi. Untuk melanjutkan proses pemesanan, silakan hubungi admin kami atau kunjungi toko resmi kami di Shopee.
+                            </p>
+                        </div>
+
+                        <!-- Dua Tombol Baru -->
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                            <button class="btn-checkout" id="btnWhatsApp" style="background: #25D366; border: none;">
+                                <i class="fab fa-whatsapp"></i> Hubungi Admin (WA)
+                            </button>
+                            <a href="https://shopee.co.id/vincistore.padang" target="_blank" class="btn-checkout" id="btnShopee" style="text-decoration: none; background: #EE4D2D; border: none;">
+                                <i class="fas fa-shopping-bag"></i> Kunjungi Shopee
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -475,7 +449,7 @@
 
         async function fetchCart() {
             try {
-                const res = await fetch('/api/v1/cart');
+                const res = await fetch('/api/v1/cart', { credentials: 'same-origin' });
                 const data = await res.json();
                 if (data.success) renderCart(data.items);
             } catch (err) { console.error(err); }
@@ -485,7 +459,7 @@
             const btn = document.querySelector(`[data-cart-id="${cartId}"]`);
             if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
             try {
-                const res = await fetch(`/api/v1/cart/${cartId}`, { method: 'DELETE' });
+                const res = await fetch(`/api/v1/cart/${cartId}`, { method: 'DELETE', credentials: 'same-origin' });
                 const data = await res.json();
                 if (data.success) fetchCart();
             } catch (err) { console.error(err); }
@@ -557,6 +531,29 @@
             summaryEl.innerHTML = summaryHtml;
             totalEl.textContent = formatRupiah(total);
         }
+        async function recordOrder() {
+            try {
+                await fetch('/api/v1/cart/order', { 
+                    method: 'POST', 
+                    credentials: 'same-origin' 
+                });
+            } catch (err) {
+                console.error("Gagal mencatat status pesanan:", err);
+            }
+        }
+
+        // Pasang ke tombol WhatsApp
+        document.getElementById('btnWhatsApp').onclick = async function() {
+            await recordOrder();
+            const message = encodeURIComponent("Assalammualaikum kak Vinci, saya mau order donk kak 😍. Saya ingin memesan produk yang sudah saya cek ukurannya di website Virtual Tailor.");
+            window.location.href = `https://wa.me/6285263331244?text=${message}`; 
+        };
+
+        // Pasang ke tombol Shopee
+        document.getElementById('btnShopee').onclick = async function() {
+            await recordOrder();
+            // Biarkan link Shopee terbuka di tab baru (target="_blank" pada HTML)
+        };
     </script>
 
     <script src="/static/js/navbar.js"></script>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk ke Akun | Vinci Store</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #5c2b29;
+            --primary-light: #7a3a38;
+            --accent: #d88c8f;
+            --accent-hover: #c47679;
+            --text-main: #332323;
+            --text-light: #6b5c5c;
+            --text-muted: #9c8f8f;
+            --bg-body: #fff9f9;
+            --border: #f0dcdc;
+            --white: #ffffff;
+            --shadow: 0 10px 25px -5px rgba(92, 43, 41, 0.1), 0 8px 10px -6px rgba(92, 43, 41, 0.05);
+            --font: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: 3px;
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-decoration: none;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-mark i { color: var(--accent); font-size: 16px; }
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: var(--font);
+            outline: none;
+            transition: all 0.2s;
+            background: #fffafa;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(216, 140, 143, 0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 13px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .checkbox-label input { accent-color: var(--primary); cursor: pointer; }
+
+        .forgot-link {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(92, 43, 41, 0.2);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span { padding: 0 10px; }
+
+        .btn-google {
+            width: 100%;
+            padding: 12px;
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-google:hover {
+            background: var(--bg-body);
+            border-color: var(--primary);
+        }
+
+        .btn-google img { width: 18px; }
+
+        .footer-text {
+            margin-top: 30px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .footer-text a {
+            color: var(--accent);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .footer-text a:hover { color: var(--accent-hover); }
+
+        /* Error Message Alert */
+        .alert {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .alert-error { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo" style="cursor: default; display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 30px;">
+            <div style="width: 42px; height: 42px; border-radius: 50%; overflow: hidden; background: var(--primary); display: flex; align-items: center; justify-content: center; border: 2px solid var(--border); flex-shrink: 0;">
+                <img src="/static/logo.png" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <span style="font-weight: 800; font-size: 20px; letter-spacing: 3px; color: var(--primary);">VINCI STORE</span>
+        </div>
+
+        <div class="header" style="text-align: center;">
+            <h2>Selamat Datang!</h2>
+            <p>Silakan masuk untuk mengakses fitur lainnya</p>
+        </div>
+
+        <div id="loginAlert" class="alert alert-error"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">Email / Username</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="text" id="email" class="form-input" placeholder="user@gmail.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Kata Sandi</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="remember">
+                    Ingat saya
+                </label>
+                <a href="#" class="forgot-link">Lupa sandi?</a>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                Masuk
+            </button>
+        </form>
+
+        <div class="divider"><span>ATAU</span></div>
+
+        <button class="btn-google" onclick="window.location.href='/api/v1/auth/login/google'">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+            Masuk dengan Google
+        </button>
+
+        <p class="footer-text">
+            Belum punya akun? <a href="/register">Daftar Sekarang</a>
+        </p>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginAlert = document.getElementById('loginAlert');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // UI State: Loading
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghubungkan...';
+            btnSubmit.disabled = true;
+            loginAlert.style.display = 'none';
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            try {
+                const response = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, remember })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Berhasil, arahkan ke home
+                    window.location.href = result.redirect;
+                } else {
+                    // Gagal, tampilkan pesan error
+                    loginAlert.textContent = result.message || 'Login gagal, periksa kredensial Anda.';
+                    loginAlert.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                loginAlert.textContent = 'Terjadi kesalahan pada server. Coba lagi nanti.';
+                loginAlert.style.display = 'block';
+            } finally {
+                btnSubmit.innerHTML = 'Masuk ke Akun';
+                btnSubmit.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

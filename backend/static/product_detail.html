@@ -306,7 +306,7 @@
         .pdp-info {
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 20px;
         }
 
         /* Meta badges */
@@ -338,10 +338,11 @@
 
         /* Title */
         .pdp-title {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 800;
             color: var(--primary);
             line-height: 1.2;
+            margin: 0;
         }
 
         /* Pricing */
@@ -353,9 +354,11 @@
         }
 
         .price-main {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
             color: var(--primary);
+            margin-top: -5px;
+            display: block;
         }
 
         /* Description */
@@ -690,66 +693,32 @@
 </head>
 <body>
 
-    <!-- ========== HEADER ========== -->
     <div id="navbar-container"></div>
 
     <main class="container">
-
-        <!-- ========== BREADCRUMB ========== -->
-        <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
-            <a href="/"><i class="fas fa-home"></i> Beranda</a>
-            <i class="fas fa-chevron-right"></i>
-            <a href="/">Katalog</a>
+        <!-- BREADCRUMB -->
+        <nav class="breadcrumb">
+            <a href="/">Beranda</a>
             <i class="fas fa-chevron-right"></i>
             <span class="current" id="breadcrumbProduct">Memuat...</span>
         </nav>
 
-        <!-- ========== LOADING ========== -->
         <div id="loadingState">
             <div class="spinner"></div>
             <p>Memuat detail produk...</p>
         </div>
 
-        <!-- ========== PRODUCT DETAIL ========== -->
-        <div id="pdpContent">
+        <div id="pdpContent" style="display:none;">
             <div class="pdp-grid">
-
-                <!-- ===== LEFT: IMAGES ===== -->
+                <!-- LEFT -->
                 <div class="pdp-images">
-                    <div class="main-image" id="mainImageWrap">
-                        <span class="badge-label" id="badgeLabel">Tersedia</span>
-                        <button class="share-btn" onclick="navigator.share && navigator.share({title: document.title, url: location.href})" title="Bagikan">
-                            <i class="fas fa-share-nodes"></i>
-                        </button>
-                        <!-- Image or placeholder injected by JS -->
-                        <div class="main-image-placeholder" id="imagePlaceholder">
-                            <i class="fas fa-image"></i>
-                            <span>Foto Produk</span>
-                        </div>
-                    </div>
+                    <div class="main-image" id="mainImageWrap"></div>
                 </div>
 
-                <!-- ===== RIGHT: PRODUCT INFO ===== -->
+                <!-- RIGHT -->
                 <div class="pdp-info">
-
-                    <!-- Meta -->
-                    <div class="pdp-meta" id="pdpMeta">
-                        <span class="tag-pill"><i class="fas fa-tag"></i> <span id="metaCategory">Pakaian</span></span>
-                        <span class="tag-pill gold" id="busui-tag" style="display:none;">
-                            <i class="fas fa-heart"></i> Busui Friendly
-                        </span>
-                        <span class="tag-pill" id="wudhu-tag" style="display:none;">
-                            <i class="fas fa-star"></i> Wudhu Friendly
-                        </span>
-                    </div>
-
-                    <!-- Title -->
-                    <h1 class="pdp-title" id="pdpTitle">Nama Produk</h1>
-
-                    <!-- Price -->
-                    <div class="pdp-pricing">
-                        <span class="price-main" id="pdpPrice">Rp 0</span>
-                    </div>
+                    <h1 class="pdp-title" id="pdpTitle">—</h1>
+                    <span class="price-main" id="pdpPrice">Rp 0</span>
 
                     <!-- Divider -->
                     <hr style="border:none; border-top:1px solid var(--border);">
@@ -760,105 +729,62 @@
                         <p class="pdp-desc" id="pdpDesc">Memuat deskripsi...</p>
                     </div>
 
-                    <!-- Feature tags -->
-                    <div class="feature-tags" id="featureTags"></div>
-
-                    <!-- ===== SPESIFIKASI (TABEL DB) ===== -->
                     <div class="spec-container">
                         <div class="spec-tabs">
-                            <button class="spec-tab active" id="tab-attr" onclick="switchTab('attr')">
-                                <i class="fas fa-list-ul"></i> Atribut Produk
-                            </button>
-                            <button class="spec-tab" id="tab-size" onclick="switchTab('size')">
-                                <i class="fas fa-ruler-combined"></i> Tabel Ukuran
-                            </button>
+                            <!-- Tabel Ukuran diatur sebagai active secara default -->
+                            <button class="spec-tab active" id="tab-size" onclick="switchTab('size')">Tabel Ukuran</button>
+                            <button class="spec-tab" id="tab-attr" onclick="switchTab('attr')">Atribut Produk</button>
                         </div>
 
-                        <!-- Panel: Atribut -->
-                        <div class="tab-panel active" id="panel-attr">
-                            <table class="spec-table" id="attrTable">
-                                <tbody>
-                                    <!-- Rows injected by JS -->
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Panel: Ukuran -->
-                        <div class="tab-panel" id="panel-size">
-                            <div class="size-chart-header">
-                                <i class="fas fa-info-circle"></i>
-                                Ukuran berdasarkan dimensi aktual produk.
-                            </div>
+                        <!-- PANEL: TABEL UKURAN (Active Default) -->
+                        <div class="tab-panel active" id="panel-size">
                             <div class="size-visual">
                                 <div class="size-card">
-                                    <div class="sv-label"><i class="fas fa-ruler-horizontal"></i> Lingkar Dada (LD)</div>
+                                    <div class="sv-label">Lingkar Dada (LD)</div>
                                     <div class="sv-value" id="svLD">—</div>
-                                    <div class="sv-unit">cm</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">cm</div>
                                 </div>
                                 <div class="size-card">
-                                    <div class="sv-label"><i class="fas fa-ruler-vertical"></i> Panjang Produk</div>
+                                    <div class="sv-label">Panjang Produk</div>
                                     <div class="sv-value" id="svPanjang">—</div>
-                                    <div class="sv-unit">cm</div>
+                                    <div style="font-size: 10px; color: var(--text-muted);">cm</div>
                                 </div>
                             </div>
-                            <table class="spec-table" style="margin-top: 0;">
+                            <table class="spec-table">
                                 <tbody>
                                     <tr>
-                                        <td>Lingkar Dada (LD)</td>
-                                        <td id="sizeLd">—</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Panjang Produk</td>
-                                        <td id="sizePanjang">—</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Keterangan</td>
-                                        <td style="color:var(--text-muted); font-size:12px; font-weight:400;">Ukuran merupakan dimensi aktual produk. Kami sarankan cek ukuran dengan Virtual Tailor.</td>
+                                        <td style="color:var(--text-muted); font-size:13px; font-weight:400; text-align: justify;">
+                                            Ukuran merupakan dimensi aktual produk. Kami sarankan cek ukuran dengan Virtual Tailor.
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
 
-                    <!-- Quantity -->
-                    <div class="qty-row">
-                        <span class="qty-label">Jumlah:</span>
-                        <div class="qty-control">
-                            <button class="qty-btn" id="qtyMinus"><i class="fas fa-minus"></i></button>
-                            <input type="text" class="qty-input" id="qtyInput" value="1" readonly>
-                            <button class="qty-btn" id="qtyPlus"><i class="fas fa-plus"></i></button>
+                        <!-- PANEL: ATRIBUT -->
+                        <div class="tab-panel" id="panel-attr">
+                            <table class="spec-table">
+                                <tbody id="attrBody"></tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
                     <div class="pdp-actions">
                         <button class="btn-primary-action" id="btnVirtualTailor">
-                            <i class="fas fa-ruler"></i>
-                            Cek Kesesuaian Ukuran (Virtual Tailor)
+                            <i class="fas fa-ruler-combined"></i> Virtual Tailor AI
                         </button>
                         <button class="btn-secondary-action" id="btnAddCart">
-                            <i class="fas fa-shopping-bag"></i>
-                            Tambah ke Keranjang
+                            <i class="fas fa-cart-plus"></i> Tambahkan ke Keranjang
                         </button>
                     </div>
-
-                    <!-- VT Info Card -->
-                    <div class="virtual-tailor-cta">
-                        <div class="vt-icon"><i class="fas fa-camera"></i></div>
-                        <div class="vt-text">
-                            <h4>✨ Adaptive Virtual Tailor</h4>
-                            <p>Tidak yakin ukuranmu? Scan tubuhmu dengan AI kami dan temukan kesesuaian ukuran secara instan sebelum membeli.</p>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
-
     </main>
 
     <script>
-        // ========= Tab Switcher =========
+        let currentProduct = null;
+
         function switchTab(tabId) {
             document.querySelectorAll('.spec-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -866,217 +792,148 @@
             document.getElementById('panel-' + tabId).classList.add('active');
         }
 
-        // ========= Quantity Control =========
-        let qty = 1;
-        document.getElementById('qtyMinus').addEventListener('click', () => {
-            if (qty > 1) { qty--; document.getElementById('qtyInput').value = qty; }
-        });
-        document.getElementById('qtyPlus').addEventListener('click', () => {
-            if (qty < 10) { qty++; document.getElementById('qtyInput').value = qty; }
-        });
-
-        // ========= Load Product =========
         async function loadProduct() {
             const pathParts = window.location.pathname.split('/');
             const productId = parseInt(pathParts[pathParts.length - 1]);
 
-            if (!productId || isNaN(productId)) {
-                showError('ID produk tidak valid.');
-                return;
-            }
-
             try {
-                // Try single product endpoint first, fallback to list
-                let product = null;
-                const singleRes = await fetch(`/api/v1/products/${productId}`);
-                if (singleRes.ok) {
-                    const singleData = await singleRes.json();
-                    if (singleData.success && singleData.product) {
-                        product = singleData.product;
-                    }
+                // UTAMA: Ambil dari API detail produk (lebih lengkap data join-nya)
+                const res = await fetch(`/api/v1/products/${productId}`);
+                const data = await res.json();
+                
+                if (data.success && data.product) {
+                    currentProduct = data.product;
+                    renderProduct(currentProduct);
+                } else {
+                    // FALLBACK: Jika API detail tidak tersedia, ambil dari list
+                    const resAll = await fetch('/api/v1/products');
+                    const dataAll = await resAll.json();
+                    currentProduct = dataAll.products.find(p => p.id === productId);
+                    if (currentProduct) renderProduct(currentProduct);
                 }
-
-                if (!product) {
-                    // Fallback: load all and find
-                    const allRes = await fetch('/api/v1/products');
-                    const allData = await allRes.json();
-                    if (allData.success && allData.products) {
-                        const found = allData.products.find(p => p.id === productId);
-                        if (found) product = found;
-                    }
-                }
-
-                if (!product) {
-                    showError('Produk tidak ditemukan.');
-                    return;
-                }
-
-                renderProduct(product);
-
-            } catch (err) {
-                console.error(err);
-                showError('Gagal memuat detail produk.');
+            } catch (e) { 
+                console.error("Gagal load produk:", e); 
             }
-        }
-
-        function showError(msg) {
-            const ls = document.getElementById('loadingState');
-            ls.innerHTML = `
-                <i class="fas fa-exclamation-circle" style="font-size:40px; color:var(--text-muted);"></i>
-                <p style="color:var(--text-muted);">${msg}</p>
-                <a href="/" style="color:var(--accent); font-weight:600; margin-top:8px;">← Kembali ke Katalog</a>
-            `;
         }
 
         function renderProduct(p) {
-            // Hide loading, show content
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('pdpContent').style.display = 'block';
 
-            // Breadcrumb
-            document.getElementById('breadcrumbProduct').textContent = p.name;
-            document.title = `${p.name} | Vinci Store`;
+            document.title = p.name + " | Vinci Store";
+            document.getElementById('breadcrumbProduct').innerText = p.name;
+            document.getElementById('pdpTitle').innerText = p.name;
+            document.getElementById('pdpPrice').innerText = "Rp" + p.price.toLocaleString('id-ID');
+            document.getElementById('pdpDesc').innerText = p.description || '';
+            
+            document.getElementById('mainImageWrap').innerHTML = `<img src="${p.image_url}" alt="${p.name}">`;
 
-            // Product image
-            const imgWrap = document.getElementById('mainImageWrap');
-            if (p.image_url) {
-                const placeholder = document.getElementById('imagePlaceholder');
-                const img = document.createElement('img');
-                img.src = p.image_url;
-                img.alt = p.name;
-                img.onerror = () => { img.remove(); };
-                imgWrap.insertBefore(img, placeholder);
-                placeholder.remove();
-            }
-
-            // Badge
+            // Render Atribut Produk
             const desc = (p.description || '').toLowerCase();
-            const badgeEl = document.getElementById('badgeLabel');
-            if (desc.includes('busui')) {
-                badgeEl.textContent = 'Busui Friendly';
-                badgeEl.classList.add('gold');
+            document.getElementById('attrBody').innerHTML = `
+                <tr><td>Busui Friendly</td><td>${desc.includes('busui') ? '✓ Ya' : '✗ Tidak'}</td></tr>
+                <tr><td>Wudhu Friendly</td><td>${desc.includes('wudhu') ? '✓ Ya' : '✗ Tidak'}</td></tr>
+            `;
+
+            // --- LOGIKA PENANGKAPAN DATA UKURAN (PENTING) ---
+            // Mengecek apakah data ada di 'size_chart' (objek tunggal) atau 'size_charts' (array)
+            let sc = p.size_chart;
+            if (!sc && p.size_charts && p.size_charts.length > 0) {
+                sc = p.size_charts[0];
             }
 
-            // Meta tags
-            if (desc.includes('busui')) {
-                document.getElementById('busui-tag').style.display = 'inline-flex';
-            }
-            if (desc.includes('wudhu')) {
-                document.getElementById('wudhu-tag').style.display = 'inline-flex';
-            }
-
-            // Title & Price
-            document.getElementById('pdpTitle').textContent = p.name;
-            document.getElementById('pdpPrice').textContent =
-                'Rp ' + p.price.toLocaleString('id-ID');
-
-            // Description
-            document.getElementById('pdpDesc').textContent = p.description || '—';
-
-            // Feature tags from description keywords
-            const featureMap = [
-                { key: 'busui',    icon: 'fa-heart',       label: 'Busui Friendly' },
-                { key: 'wudhu',    icon: 'fa-star',        label: 'Wudhu Friendly' },
-                { key: 'furing',   icon: 'fa-layer-group', label: 'Full Furing' },
-                { key: 'inner',    icon: 'fa-circle-half-stroke', label: 'Inner Terpisah' },
-                { key: 'katun',    icon: 'fa-leaf',        label: 'Bahan Katun' },
-                { key: 'import',   icon: 'fa-globe',       label: 'Bahan Import' },
-            ];
-
-            const ftEl = document.getElementById('featureTags');
-            featureMap.forEach(f => {
-                if (desc.includes(f.key)) {
-                    const el = document.createElement('span');
-                    el.className = 'feature-tag';
-                    el.innerHTML = `<i class="fas ${f.icon}"></i> ${f.label}`;
-                    ftEl.appendChild(el);
-                }
-            });
-
-            // ===== ATRIBUT TABLE (FROM DATABASE) =====
-            const tbody = document.querySelector('#attrTable tbody');
-
-            // Parse bahan from description
-            const bahanMatch = p.description.match(/bahan\s*:?\s*([^.]+)/i);
-            const bahanStr = bahanMatch ? bahanMatch[1].trim() : '—';
-
-            const attrs = [
-                { label: 'ID Produk',  value: `#VNC-${String(p.id).padStart(4,'0')}` },
-                { label: 'Nama Produk', value: p.name },
-                { label: 'Bahan',      value: bahanStr },
-                { label: 'Harga',      value: 'Rp ' + p.price.toLocaleString('id-ID') },
-                { label: 'Busui Friendly', value: desc.includes('busui') && !desc.includes('tdk busui') && !desc.includes('tidak busui') ? '✓ Ya' : '✗ Tidak' },
-                { label: 'Wudhu Friendly', value: desc.includes('wudhu') ? '✓ Ya' : '✗ Tidak' },
-            ];
-
-            attrs.forEach(a => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${a.label}</td><td>${a.value}</td>`;
-                tbody.appendChild(tr);
-            });
-
-            // ===== SIZE CHART TABLE =====
-            if (p.size_chart) {
-                const sc = p.size_chart;
-                document.getElementById('svLD').textContent      = sc.ld_produk;
-                document.getElementById('svPanjang').textContent = sc.panjang_produk;
-                document.getElementById('sizeLd').textContent    = sc.ld_produk + ' cm';
-                document.getElementById('sizePanjang').textContent = sc.panjang_produk + ' cm';
+            if(sc) {
+                const ldValue = sc.ld_produk || sc.ld || "—";
+                const pjValue = sc.panjang_produk || sc.panjang || "—";
+                
+                // Update ke Card Visual
+                document.getElementById('svLD').innerText = ldValue;
+                document.getElementById('svPanjang').innerText = pjValue;
+                
+                // Update ke Baris Tabel
+                document.getElementById('tableLD').innerText = ldValue + " cm";
+                document.getElementById('tablePanjang').innerText = pjValue + " cm";
             } else {
-                // If using all-products endpoint (no size_chart), show N/A
-                document.getElementById('svLD').textContent = 'N/A';
-                document.getElementById('svPanjang').textContent = 'N/A';
-                document.getElementById('sizeLd').textContent = 'Tidak tersedia';
-                document.getElementById('sizePanjang').textContent = 'Tidak tersedia';
+                console.warn("Data size chart tidak ditemukan untuk produk ini:", p);
             }
-
-            // ===== BUTTONS =====
-            document.getElementById('btnVirtualTailor').addEventListener('click', async () => {
-                const btn = document.getElementById('btnVirtualTailor');
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
-
-                try {
-                    const res = await fetch('/api/v1/session/product', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ product_id: p.id })
-                    });
-
-                    if (res.ok) {
-                        window.location.href = '/virtual-tailor';
-                    } else {
-                        alert('Gagal menyimpan sesi. Coba lagi.');
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-ruler"></i> Cek Kesesuaian Ukuran (Virtual Tailor)';
-                    }
-                } catch (e) {
-                    alert('Gagal terhubung ke server.');
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-ruler"></i> Cek Kesesuaian Ukuran (Virtual Tailor)';
-                }
-            });
-
-            document.getElementById('btnAddCart').addEventListener('click', () => {
-                // Visual feedback
-                const btn = document.getElementById('btnAddCart');
-                btn.innerHTML = '<i class="fas fa-check"></i> Ditambahkan!';
-                btn.style.background = 'var(--success)';
-                btn.style.color = 'var(--white)';
-                btn.style.borderColor = 'var(--success)';
-                setTimeout(() => {
-                    btn.innerHTML = '<i class="fas fa-shopping-bag"></i> Tambah ke Keranjang';
-                    btn.style.background = '';
-                    btn.style.color = '';
-                    btn.style.borderColor = '';
-                }, 2000);
-            });
         }
 
-        // ========= Boot =========
-        document.addEventListener('DOMContentLoaded', loadProduct);
-    </script>
+        async function checkLogin() {
+            const res = await fetch('/api/v1/auth/me');
+            const data = await res.json();
+            return data.logged_in;
+        }
 
+        document.getElementById('btnVirtualTailor').onclick = async () => {
+            if (!(await checkLogin())) {
+                if (window.showAuthModal) window.showAuthModal();
+                return;
+            }
+            await fetch('/api/v1/session/product', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ product_id: currentProduct.id })
+            });
+            window.location.href = '/virtual-tailor';
+        };
+
+        document.getElementById('btnAddCart').onclick = async () => {
+            const btn = document.getElementById('btnAddCart');
+            const originalContent = btn.innerHTML;
+
+            // 1. Validasi Login lewat Navbar State atau API
+            const authRes = await fetch('/api/v1/auth/me');
+            const authData = await authRes.json();
+
+            if (!authData.logged_in) {
+                if (window.showAuthModal) window.showAuthModal();
+                return;
+            }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/v1/cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ product_id: currentProduct.id })
+                });
+
+                // CEK: Jika server balas 404/500 dalam bentuk HTML
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    console.error("Server return HTML instead of JSON. Check URL or Route!");
+                    throw new Error("Server Error (URL tidak ditemukan atau Crash)");
+                }
+
+                const result = await res.json();
+                if (result.success) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+                    btn.style.background = 'var(--success)';
+                    btn.style.color = 'white';
+                    if (window.renderNavbar) window.renderNavbar();
+                    
+                    // Pindah ke halaman keranjang setelah 1 detik
+                    setTimeout(() => {
+                        window.location.href = '/keranjang';
+                    }, 1000);
+                } else {
+                    alert("Gagal: " + result.message);
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                alert("Terjadi kesalahan: " + error.message);
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        };
+
+        window.onload = loadProduct;
+    </script>
     <script src="/static/js/navbar.js"></script>
 </body>
 </html>

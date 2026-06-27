@@ -545,27 +545,6 @@
             letter-spacing: 0.3px;
         }
 
-        .wishlist-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 32px;
-            height: 32px;
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            opacity: 0;
-        }
-
-        .product-card:hover .wishlist-btn { opacity: 1; }
-        .wishlist-btn:hover { color: #ef4444; border-color: #ef4444; }
-
         .product-info {
             padding: 16px;
             flex: 1;
@@ -740,6 +719,16 @@
             transform: translateY(-1px);
         }
 
+        #searchInput:focus {
+            border-color: var(--accent);
+            width: 500px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        #sortSelect:focus {
+            border-color: var(--accent);
+        }
+
         /* ===========================
            Footer
         =========================== */
@@ -873,7 +862,7 @@
                         <i class="fas fa-th-large"></i>
                         Lihat Katalog
                     </a>
-                    <a href="/virtual-tailor" class="btn-hero-secondary">
+                    <a href="javascript:void(0)" class="btn-hero-secondary auth-check" data-target="/virtual-tailor">
                         <i class="fas fa-ruler"></i>
                         Virtual Tailor
                     </a>
@@ -905,19 +894,35 @@
 
         <!-- ========== CATALOG ========== -->
         <section class="catalog">
-            <div class="catalog-header">
+            <div class="catalog-header" style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; gap: 16px; flex-wrap: wrap;">
+                
+                <!-- Sisi Kiri: Judul -->
                 <div class="catalog-title">
-                    <h2>Katalog Produk</h2>
-                    <p id="productCount">Memuat produk...</p>
+                    <h2 style="font-size: 22px; font-weight: 700; color: var(--primary);">Katalog Produk</h2>
+                    <p id="productCount" style="font-size: 14px; color: var(--text-muted); margin-top: 2px;">Memuat produk...</p>
                 </div>
-                <div class="sort-bar">
-                    <label for="sortSelect">Urutkan:</label>
-                    <select id="sortSelect">
-                        <option value="default">Terbaru</option>
-                        <option value="price-asc">Harga: Terendah</option>
-                        <option value="price-desc">Harga: Tertinggi</option>
-                        <option value="name-az">Nama: A-Z</option>
-                    </select>
+
+                <!-- Sisi Kanan: Area Kontrol (Search + Sort) -->
+                <div class="catalog-controls" style="display: flex; align-items: center; gap: 12px;">
+                    
+                    <!-- Search Mini -->
+                    <div class="search-mini" style="position: relative; display: flex; align-items: center;">
+                        <i class="fas fa-search" style="position: absolute; left: 12px; color: var(--text-muted); font-size: 13px; pointer-events: none;"></i>
+                        <input type="text" placeholder="Cari produk..." id="searchInput" 
+                            style="padding: 9px 12px 9px 36px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--white); font-family: var(--font); font-size: 13px; color: var(--text-main); outline: none; transition: all 0.2s; width: 280px;">
+                    </div>
+
+                    <!-- Dropdown Urutkan -->
+                    <div class="sort-bar" style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-light);">
+                        <label for="sortSelect">Urutkan:</label>
+                        <select id="sortSelect" style="padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--white); font-family: var(--font); font-size: 13px; color: var(--text-main); outline: none; cursor: pointer; transition: border-color 0.2s;">
+                            <option value="default">Terbaru</option>
+                            <option value="price-asc">Harga: Terendah</option>
+                            <option value="price-desc">Harga: Tertinggi</option>
+                            <option value="name-az">Nama: A-Z</option>
+                        </select>
+                    </div>
+
                 </div>
             </div>
 
@@ -972,7 +977,7 @@
                 <h3><i class="fas fa-ruler-combined" style="color:var(--accent); margin-right:10px;"></i>Tidak Yakin Ukuranmu?</h3>
                 <p>Gunakan Virtual Tailor AI kami. Scan tubuhmu dan kami hitung ukuran yang tepat secara instan.</p>
             </div>
-            <a href="/virtual-tailor" class="btn-feature">
+            <a href="javascript:void(0)" class="btn-feature auth-check" data-target="/virtual-tailor">
                 <i class="fas fa-camera"></i>
                 Coba Virtual Tailor
             </a>
@@ -1026,6 +1031,33 @@
         </div>
     </footer>
 
+    <div id="authModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(51,35,35,0.7); backdrop-filter:blur(5px); align-items:center; justify-content:center;">
+        <div style="background:var(--white); width:90%; max-width:400px; padding:35px; border-radius:24px; text-align:center; box-shadow:var(--shadow-lg); border:1px solid var(--border); animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div style="width:70px; height:70px; background:var(--bg-section); color:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:28px; border: 2px solid var(--border);">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3 style="color:var(--primary); margin-bottom:12px; font-weight:800; font-size: 22px;">Akses Terbatas</h3>
+            <p style="color:var(--text-light); font-size:14px; line-height:1.7; margin-bottom:30px; padding: 0 10px;">
+                Fitur <b>Virtual Tailor</b> dan <b>Keranjang</b> memerlukan akun. Silakan masuk untuk pengalaman belanja yang lebih personal.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <a href="/login" style="background:var(--primary); color:white; padding:14px; border-radius:12px; font-weight:700; text-decoration:none; display:flex; align-items:center; justify-content:center; transition: background 0.2s;" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='var(--primary)'">
+                    Masuk ke Akun
+                </a>
+                <button onclick="closeAuthModal()" style="background:none; border:none; color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer; padding:10px; transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'">
+                    Mungkin Nanti
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    @keyframes modalFadeIn {
+        from { opacity: 0; transform: scale(0.9) translateY(30px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    </style>
+
     <script>
         // ========= State =========
         let allProducts = [];
@@ -1035,8 +1067,16 @@
 
         // ========= Fetch Products =========
         async function loadProducts() {
+            const grid = document.getElementById('productGrid');
+            
+            // Beri jeda 200ms agar tidak tabrakan dengan fetch Navbar (Status Login & Cart)
+            await new Promise(resolve => setTimeout(resolve, 200));
+
             try {
-                const res = await fetch('/api/v1/products');
+                const res = await fetch('/api/v1/products?t=' + Date.now());
+                
+                if (!res.ok) throw new Error("Database busy");
+
                 const data = await res.json();
 
                 if (data.success && data.products) {
@@ -1044,17 +1084,30 @@
                     document.getElementById('heroProductCount').textContent = allProducts.length + '+';
                     buildCategoryButtons(allProducts);
                     applyFiltersAndSort();
+                } else {
+                    throw new Error("Data empty");
                 }
             } catch (err) {
-                console.error('Failed to load products:', err);
-                document.getElementById('productGrid').innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <p>Gagal memuat produk. Pastikan server berjalan.</p>
-                    </div>`;
-                document.getElementById('productCount').textContent = '';
+                console.error('Fetch Error:', err);
+                // Jika gagal, jangan langsung menyerah, coba sekali lagi otomatis tanpa pesan error
+                setTimeout(() => {
+                    // Jika masih kosong, baru tampilkan UI error
+                    if (grid.innerHTML.includes('skeleton') || grid.innerHTML === "") {
+                         grid.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-sync fa-spin" style="font-size:30px; color:var(--accent)"></i>
+                                <p style="margin-top:10px">Menghubungkan ulang...</p>
+                                <button onclick="location.reload()" style="margin-top:10px; border:none; background:none; color:var(--primary); font-weight:bold; cursor:pointer">Klik jika macet</button>
+                            </div>`;
+                         // Coba panggil lagi terakhir kali
+                         setTimeout(() => location.reload(), 2000);
+                    }
+                }, 500);
             }
         }
+
+        // ========= State Global untuk Redirect =========
+        let pendingTargetUrl = null;
 
         // ========= Category Buttons =========
         function buildCategoryButtons(products) {
@@ -1144,9 +1197,8 @@
                 card.className = 'product-card';
                 card.style.animationDelay = `${i * 50}ms`;
 
-                // Detect product type badge
-                const desc = (product.description || '').toLowerCase();
-                const badge = desc.includes('busui') ? 'Busui Friendly' : 'Tersedia';
+                // SEMUA LABEL DIBUAT "Tersedia"
+                const badge = 'Tersedia';
 
                 card.innerHTML = `
                     <div class="product-img-wrap">
@@ -1160,7 +1212,6 @@
                             </button>
                         </div>
                         <span class="product-tag">${badge}</span>
-                        <button class="wishlist-btn" title="Simpan"><i class="far fa-heart"></i></button>
                     </div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
@@ -1171,13 +1222,7 @@
                         </div>
                     </div>
                 `;
-
-                card.addEventListener('click', (e) => {
-                    if (e.target.closest('.wishlist-btn')) {
-                        e.stopPropagation();
-                        toggleWishlist(e.target.closest('.wishlist-btn'));
-                        return;
-                    }
+                card.addEventListener('click', () => {
                     window.location.href = `/product/${product.id}`;
                 });
 
@@ -1185,16 +1230,6 @@
             });
 
             loadWrap.style.display = filteredProducts.length > visibleCount ? 'flex' : 'none';
-        }
-
-        // ========= Wishlist Toggle =========
-        function toggleWishlist(btn) {
-            const icon = btn.querySelector('i');
-            const isActive = icon.classList.contains('fas');
-            icon.classList.toggle('fas', !isActive);
-            icon.classList.toggle('far', isActive);
-            btn.style.color = isActive ? '' : '#ef4444';
-            btn.style.borderColor = isActive ? '' : '#ef4444';
         }
 
         // ========= Load More =========
@@ -1223,5 +1258,6 @@
     </script>
 
     <script src="/static/js/navbar.js"></script>
+
 </body>
 </html>

@@ -29,12 +29,10 @@
             --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
             --radius: 10px;
             --font: 'Inter', sans-serif;
-            
-            /* Mapping original variables from styles.css to new variables to preserve backward compatibility for JS if any */
             --danger: #ef4444;
         }
 
-        /* Basic Reset & Header (Same as product_detail.html) */
+        /* Basic Reset & Header */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font); background: var(--bg-body); color: var(--text-main); line-height: 1.6; padding-bottom: 80px; }
         a { text-decoration: none; color: inherit; }
@@ -84,11 +82,7 @@
         .media-container { position: relative; width: 100%; aspect-ratio: 4/3; background: var(--bg-section); border-radius: 12px; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
         #videoFeed, #imagePreview { width: 100%; height: 100%; object-fit: contain; }
         #overlayCanvas, #drawCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        #drawCanvas { cursor: crosshair; z-index: 10; pointer-events: auto; }
         
-        .draw-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(92, 43, 41, 0.8); color: white; padding: 8px 16px; border-radius: 20px; font-size: 13px; pointer-events: none; z-index: 20; opacity: 0; transition: opacity 0.3s; font-weight: 500; }
-        .draw-hint.visible { opacity: 1; }
-
         /* File Upload */
         .file-upload-wrapper { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-section); transition: all 0.3s ease; }
         .file-upload-wrapper:hover { background: #f0e1e1; }
@@ -125,7 +119,7 @@
         .measurement-label { color: var(--text-light); }
         .measurement-value { font-weight: 700; color: var(--primary); }
 
-        .btn-cart { background-color: var(--accent); color: var(--primary); border: none; padding: 14px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 20px; display: none; transition: background 0.2s; }
+        .btn-cart { background-color: var(--accent); color: var(--white); border: none; padding: 14px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 20px; display: none; transition: background 0.2s; }
         .btn-cart:hover { background-color: var(--accent-hover); }
 
         /* Toast */
@@ -149,7 +143,7 @@
         <nav class="breadcrumb">
             <a href="/"><i class="fas fa-home"></i> Beranda</a>
             <i class="fas fa-chevron-right"></i>
-            <span class="current">Virtual Tailor</span>
+            <span class="current">Virtual Tailor AI</span>
         </nav>
 
         <section class="vt-hero">
@@ -165,7 +159,7 @@
             <!-- Main Media Area -->
             <div class="main-panel glass-panel">
                 
-                <!-- Hidden Catalog Container to satisfy app.js references while removing it from UI -->
+                <!-- Hidden Catalog Container -->
                 <div id="step1-catalog">
                     <div id="productCatalog"></div>
                 </div>
@@ -194,10 +188,9 @@
                     </div>
 
                     <img id="imagePreview" src="" alt="Image Preview" style="display: none; position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: contain; pointer-events: none;">
-
-                    <!-- Drawing Canvas (always on top) -->
-                    <canvas id="drawCanvas"></canvas>
-                    <div class="draw-hint" id="drawHint">Tarik garis pada objek referensi</div>
+                    
+                    <!-- Hapus canvas draw manual yang tidak dipakai lagi -->
+                    <canvas id="drawCanvas" style="display: none;"></canvas>
                 </div>
 
                 <!-- Action Buttons -->
@@ -223,40 +216,37 @@
                 <h2>Pengaturan Kalibrasi</h2>
 
                 <div class="form-group">
-                    <label for="calibMethod">Metode Kalibrasi</label>
+                    <label for="calibMethod">Metode Kalibrasi Skala</label>
                     <select id="calibMethod">
                         <option value="height" selected>Tinggi Badan (Rekomendasi)</option>
-                        <option value="reference">Objek Referensi Manual (Garis)</option>
-                        <option value="reference_auto">Deteksi Kartu Otomatis (8.56cm)</option>
+                        <option value="reference_auto" deactivate>Deteksi Kartu KTP Otomatis</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="calibValue" id="calibLabel">Tinggi Badan Anda (cm)</label>
-                    <input type="number" id="calibValue" value="170" step="0.1">
+                    <label for="calibValue" id="calibLabel">Masukkan Tinggi Badan Anda (cm)</label>
+                    <input type="number" id="calibValue" value="165" step="0.1">
                 </div>
 
-                <div class="form-group">
-                    <label for="userHeight">Tinggi Badan Aktual (cm)</label>
-                    <input type="number" id="userHeight" value="170">
-                </div>
+                <input type="hidden" id="userHeight" value="165">
 
-                <button class="btn btn-outline" id="btnResetCalibration">
-                    <i class="fas fa-sync-alt"></i> Ulangi Kalibrasi
+                <button class="btn btn-outline" id="btnResetCalibration" style="display: none;">
+                    <i class="fas fa-sync-alt"></i> Ulangi Analisa
                 </button>
                 <div style="text-align: center;">
-                    <span id="calibrationStatusBadge" class="status-badge status-uncalibrated">⚠️ Belum Dikalibrasi</span>
+                    <span id="calibrationStatusBadge" class="status-badge status-uncalibrated">⚠️ Siap Diproses</span>
                 </div>
 
                 <div class="results-card">
-                    <h3>Hasil Pengukuran</h3>
+                    <h3>Hasil Pengukuran AI</h3>
                     <div id="measurementsResults">
                         <div class="measurement-item">
                             <span class="measurement-label">Status</span>
-                            <span class="measurement-value" style="color: var(--text-muted)">Menunggu...</span>
+                            <span class="measurement-value" style="color: var(--text-muted)">Menunggu data masuk...</span>
                         </div>
                     </div>
-                    <button class="btn-cart" id="btnAddToCart"><i class="fas fa-shopping-bag"></i> Tambah ke Keranjang</button>
+                    <!-- Tombol ini akan dimunculkan oleh JS setelah AI berhasil -->
+                    <button class="btn-cart" id="btnAddToCart"><i class="fas fa-shopping-bag"></i> Simpan & Lanjut ke Keranjang</button>
                 </div>
             </div>
         </div>
@@ -264,13 +254,13 @@
 
     <div id="statusToast"><i class="fas fa-info-circle"></i> <span style="margin-left:8px;">Status message</span></div>
 
-    <!-- Scripts -->
+    <!-- Scripts dari sistem Virtual Tailor Anda -->
     <script src="/static/js/api.js"></script>
     <script src="/static/js/ui.js"></script>
     <script src="/static/js/app.js"></script>
 
     <script>
-        // Quick toggle for upload action button display based on active tab
+        // Tab UI Toggle
         document.getElementById('tabUpload').addEventListener('click', () => {
             document.getElementById('contentLive').style.display = 'none';
             document.getElementById('contentUploadControl').style.display = 'block';
@@ -282,6 +272,81 @@
             document.getElementById('contentUpload').style.display = 'none';
         });
         document.getElementById('contentUploadControl').style.display = 'none';
+
+        // -------------------------------------------------------------
+        // LOGIKA PENYIMPANAN KE KERANJANG BESERTA DATA AI
+        // Menggunakan stopImmediatePropagation agar JS lama tidak bentrok
+        // -------------------------------------------------------------
+        document.getElementById('btnAddToCart').addEventListener('click', async function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            const btn = this;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan Data...';
+            btn.disabled = true;
+
+            try {
+                // 1. Ambil ID Produk yang sedang dianalisa (Dari sesi Flask)
+                const sessionRes = await fetch('/api/v1/session/product');
+                const sessionData = await sessionRes.json();
+                
+                if (!sessionData.success || !sessionData.product) {
+                    throw new Error("Produk belum dipilih. Silakan kembali ke katalog.");
+                }
+                const productId = sessionData.product.id;
+
+                // 2. Ambil nilai AI dengan aman menggunakan ID yang diberikan ui.js
+                const valFitStatus = document.getElementById('valFitStatus');
+                const valBodyShape = document.getElementById('valBodyShape');
+                
+                // Ambil teks jika elemen ada. Gunakan .replace() untuk menghapus Emoji jika ada
+                // (misal: "✅ Regular Fit" menjadi "Regular Fit")
+                let fitStatusText = null;
+                if (valFitStatus) {
+                    // Regex ini akan menghapus emoji dan spasi berlebih di awal/akhir teks
+                    fitStatusText = valFitStatus.innerText.replace(/[\u1000-\uFFFF\uD800-\uDBFF\uDC00-\uDFFF\u2000-\u26FF\s]+/g, ' ').trim();
+                }
+
+                let bodyShapeText = null;
+                if (valBodyShape) {
+                    bodyShapeText = valBodyShape.innerText.trim();
+                }
+
+                // Tampilkan log di console untuk Anda verifikasi
+                console.log("Mencoba simpan AI ke Database:", {
+                    product_id: productId,
+                    fit_status: fitStatusText,
+                    body_shape: bodyShapeText
+                });
+
+                // 3. Simpan ke Database (Tabel Keranjang / History)
+                const cartRes = await fetch('/api/v1/cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin', // WAJIB ada agar API tau siapa yang login
+                    body: JSON.stringify({
+                        product_id: productId,
+                        fit_status: fitStatusText, // Data asli, tanpa fallback
+                        body_shape: bodyShapeText  // Data asli, tanpa fallback
+                    })
+                });
+
+                const cartData = await cartRes.json();
+                
+                if (cartData.success) {
+                    // 4. BERHASIL! Arahkan user ke halaman keranjang
+                    window.location.href = '/keranjang';
+                } else {
+                    throw new Error(cartData.message || "Gagal menyimpan ukuran ke database.");
+                }
+
+            } catch (err) {
+                console.error("Gagal Add to Cart:", err);
+                alert(err.message);
+                btn.innerHTML = '<i class="fas fa-shopping-bag"></i> Coba Lagi';
+                btn.disabled = false;
+            }
+        });
     </script>
     <script src="/static/js/navbar.js"></script>
 </body>
