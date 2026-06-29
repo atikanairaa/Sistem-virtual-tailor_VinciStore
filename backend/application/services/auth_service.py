@@ -22,9 +22,9 @@ class AuthService:
 
         # 3. Validasi Username (Minimal 3 karakter, tanpa spasi)
         if not username or len(username) < 3:
-            return None, "Nama pengguna minimal harus 3 karakter."
+            return None, "Nama pelanggan minimal harus 3 karakter."
         if " " in username:
-            return None, "Nama pengguna tidak boleh mengandung spasi."
+            return None, "Nama pelanggan tidak boleh mengandung spasi."
 
         # 4. Validasi duplikasi (Cek apakah email sudah terpakai)
         if self.user_repo.get_by_email(email):

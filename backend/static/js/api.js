@@ -20,11 +20,19 @@ class APIClient {
         } catch (e) { return { success: false }; }
     }
 
+    async getProduct(productId) {
+        try {
+            const res = await fetch(`${this.baseUrl}/products/${productId}`);
+            return await res.json();
+        } catch (e) { return { success: false }; }
+    }
+
     async selectProduct(productId) {
         try {
             const res = await fetch(`${this.baseUrl}/session/product`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
                 body: JSON.stringify({ product_id: productId })
             });
             return await res.json();
@@ -33,7 +41,9 @@ class APIClient {
 
     async getSelectedProduct() {
         try {
-            const res = await fetch(`${this.baseUrl}/session/product`);
+            const res = await fetch(`${this.baseUrl}/session/product`, {
+                credentials: 'same-origin'
+            });
             return await res.json();
         } catch { return { success: false }; }
     }
@@ -55,18 +65,19 @@ class APIClient {
         } catch (e) { return { success: false, error: e.message }; }
     }
 
-    async analyze(base64Image, calibrationData) {
+    async analyze(base64Image, calibrationData, productId) {
         try {
             const payload = {
                 image: base64Image,
                 calibration_type: 'height',
                 user_height_cm: calibrationData.user_height_cm,
-                calibration_value_cm: calibrationData.user_height_cm
+                calibration_value_cm: calibrationData.user_height_cm,
+                product_id: productId
             };
             const res = await fetch(`${this.baseUrl}/analyze`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'same-origin', // Menjaga session login tetap aktif
+                credentials: 'same-origin',
                 body: JSON.stringify(payload)
             });
             return await res.json();

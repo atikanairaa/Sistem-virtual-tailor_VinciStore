@@ -13,17 +13,26 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-admin); display: flex; color: var(--text); min-height: 100vh; }
         
-        /* Sidebar (Identik dengan dashboard.html) */
+        /* Sidebar */
         .sidebar { width: 280px; background: var(--primary); color: white; height: 100vh; position: fixed; padding: 40px 20px; display: flex; flex-direction: column; z-index: 100; }
         .logo-admin { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 2px; margin-bottom: 50px; font-size: 18px; }
+        .nav-admin { flex-grow: 1; }
         .nav-item { padding: 14px 18px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; margin-bottom: 8px; color: rgba(255,255,255,0.7); text-decoration: none; }
         .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
         .nav-item.active { border-left: 4px solid var(--accent); border-radius: 4px 12px 12px 4px; background: rgba(255,255,255,0.1); font-weight: 700; }
+        .nav-section { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.35); padding: 20px 18px 8px; font-weight: 700; }
+        .nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 10px; }
         
         /* Main Content */
         .main { margin-left: 280px; width: calc(100% - 280px); padding: 40px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-        .top-bar h1 { font-size: 24px; font-weight: 800; color: var(--primary); }
+        .top-bar h2 { font-size: 24px; font-weight: 800; color: var(--primary); }
+
+        /* Search */
+        .search-bar { position: relative; margin-bottom: 20px; }
+        .search-bar input { width: 100%; padding: 11px 16px 11px 40px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+        .search-bar input:focus { border-color: var(--accent); }
+        .search-bar i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 
         /* Table Card */
         .content-card { background: var(--white); border-radius: 20px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border); }
@@ -36,7 +45,7 @@
         .badge-spec { background: var(--bg-admin); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 12px; border: 1px solid #e2e8f0; }
 
         /* Buttons */
-        .btn-add { background: var(--primary); color: white; padding: 12px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-add { background: var(--primary); color: white; padding: 20px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
         .btn-add:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(92, 43, 41, 0.2); }
         .action-btns { display: flex; gap: 8px; }
         .btn-icon { width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: 1px solid var(--border); background: white; }
@@ -55,6 +64,29 @@
         .form-group-admin input:focus { border-color: var(--accent); outline: none; background: #fffafa; }
         .btn-save { background: var(--primary); color:white; border:none; padding: 14px; width:100%; border-radius: 12px; font-weight: 700; cursor:pointer; font-size: 15px; transition: 0.3s; margin-top: 10px; }
         .btn-save:hover { background: var(--primary-light); }
+
+        /* Pagination */
+        .pagination-wrapper { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
+        .pagination-info { font-size: 13px; color: #64748b; }
+        .pagination-btns { display: flex; gap: 8px; }
+        .btn-page { padding: 7px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: white; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; color: var(--text); }
+        .btn-page:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+        .btn-page:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* Info Modal (Sukses / Error) */
+        .info-modal-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 28px; }
+        .info-modal-icon.success { background: #f0fdf4; color: #16a34a; border: 2px solid #bbf7d0; }
+        .info-modal-icon.error { background: #fef2f2; color: #dc2626; border: 2px solid #fecaca; }
+
+        /* Logout Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(30,41,59,0.7); backdrop-filter: blur(4px); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-overlay .modal-card { width: 380px; text-align: center; }
+        .modal-icon-logout { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 26px; background: #fef3cd; color: #b45309; border: 2px solid #fde68a; }
+        .btn-modal { padding: 12px; width: 100%; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .btn-modal.danger { background: #dc2626; color: white; margin-bottom: 10px; }
+        .btn-modal.danger:hover { background: #b91c1c; }
+        .btn-modal.cancel { background: none; color: #64748b; }
+        .btn-modal.cancel:hover { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -67,8 +99,13 @@
             <a href="/admin/dashboard" class="nav-item"><i class="fas fa-chart-pie"></i> Ringkasan</a>
             <a href="/admin/products" class="nav-item active"><i class="fas fa-box"></i> Kelola Produk</a>
             <a href="/" target="_blank" class="nav-item"><i class="fas fa-eye"></i> Lihat Toko</a>
+            <div class="nav-divider"></div>
+            <div class="nav-section">Laporan</div>
+            <a href="/admin/users" class="nav-item"><i class="fas fa-users"></i> Pelanggan Scan AI</a>
+            <a href="/admin/scans" class="nav-item"><i class="fas fa-magic"></i> Riwayat Aktivitas AI</a>
+            <a href="/admin/carts" class="nav-item"><i class="fas fa-shopping-basket"></i> Minat Produk</a>
         </nav>
-        <div class="nav-item" style="margin-top: auto;" onclick="handleLogout()">
+        <div class="nav-item" style="margin-top: auto;" onclick="showLogoutModal()">
             <i class="fas fa-sign-out-alt"></i> Keluar
         </div>
     </aside>
@@ -82,6 +119,10 @@
         </div>
 
         <div class="content-card">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Cari nama produk, harga, atau ukuran...">
+            </div>
             <table id="productTable">
                 <thead>
                     <tr>
@@ -93,6 +134,13 @@
                 </thead>
                 <tbody><!-- Data via JS --></tbody>
             </table>
+            <div class="pagination-wrapper">
+                <div class="pagination-info" id="paginationInfo">-</div>
+                <div class="pagination-btns">
+                    <button class="btn-page" id="btnPrev" onclick="changePage(-1)" disabled><i class="fas fa-chevron-left"></i></button>
+                    <button class="btn-page" id="btnNext" onclick="changePage(1)" disabled><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -102,7 +150,7 @@
             <h2 id="modalTitle" style="margin-bottom: 25px; color: var(--primary);">Tambah Produk</h2>
             <form id="pForm">
                 <input type="hidden" id="pId">
-                <div class="form-group-admin"><label>Nama Produk</label><input type="text" id="pName" required placeholder="Contoh: NUNA SHIRT Vol 1"></div>
+                <div class="form-group-admin"><label>Nama Produk</label><input type="text" id="pName" required></div>
                 <div class="form-grid">
                     <div class="form-group-admin"><label>Harga (IDR)</label><input type="number" id="pPrice" required placeholder="215000"></div>
                     <div class="form-group-admin"><label>URL Gambar</label><input type="text" id="pImg" required placeholder="https://..."></div>
@@ -119,8 +167,70 @@
         </div>
     </div>
 
+    <!-- MODAL KONFIRMASI HAPUS (DANGER THEME) -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-card" style="text-align: center; max-width: 380px;">
+            <div style="width: 70px; height: 70px; background: #fef2f2; color: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 30px; border: 2px solid #fecaca;">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h2 style="color: #991b1b; margin-bottom: 10px; font-size: 20px;">Hapus Produk?</h2>
+            <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 25px;">
+                Tindakan ini akan <b>menghapus produk</b> dari katalog dan tidak dapat dibatalkan.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="confirmDeleteBtn" class="btn-save" style="background: #dc2626; margin: 0;">
+                    Ya, Hapus
+                </button>
+                <button onclick="closeDeleteModal()" style="background: none; border: none; color: #64748b; font-weight: 600; cursor: pointer; padding: 10px;">
+                    Batalkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INFO (SUKSES / ERROR) -->
+    <div id="infoModal" class="modal">
+        <div class="modal-card" style="text-align: center; max-width: 360px;">
+            <div id="infoModalIcon" class="info-modal-icon success">
+                <i id="infoModalIco" class="fas fa-check"></i>
+            </div>
+            <h2 id="infoModalTitle" style="font-size: 20px; margin-bottom: 10px; color: var(--primary);">Berhasil</h2>
+            <p id="infoModalMsg" style="color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 24px;"></p>
+            <button onclick="closeInfoModal()" class="btn-save" style="margin-top: 0;">Tutup</button>
+        </div>
+    </div>
+
+    <!-- MODAL LOGOUT -->
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon-logout"><i class="fas fa-sign-out-alt"></i></div>
+            <h2 style="font-size: 20px; margin-bottom: 8px; color: var(--primary);">Keluar dari Sistem?</h2>
+            <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">Anda akan keluar dari panel admin. Sesi login akan diakhiri.</p>
+            <button class="btn-modal danger" id="confirmLogoutBtn" onclick="confirmLogout()">Ya, Keluar</button>
+            <button class="btn-modal cancel" onclick="closeLogoutModal()">Batalkan</button>
+        </div>
+    </div>
+
     <script>
-        // Modal Logic
+        let productIdToDelete = null;
+        let allProducts = [];
+        let filteredProducts = [];
+        let currentPage = 1;
+        const pageSize = 10;
+
+        // ===== INFO MODAL (Sukses / Error) =====
+        function showInfoModal(type, title, message) {
+            const iconEl = document.getElementById('infoModalIcon');
+            const icoEl = document.getElementById('infoModalIco');
+            iconEl.className = 'info-modal-icon ' + type;
+            icoEl.className = type === 'success' ? 'fas fa-check' : 'fas fa-times';
+            document.getElementById('infoModalTitle').innerText = title;
+            document.getElementById('infoModalMsg').innerText = message;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+        function closeInfoModal() { document.getElementById('infoModal').style.display = 'none'; }
+
+        // ===== CRUD MODAL =====
         function openModal(data = null) {
             document.getElementById('pModal').style.display = 'flex';
             if(data) {
@@ -130,7 +240,6 @@
                 document.getElementById('pPrice').value = data.price;
                 document.getElementById('pImg').value = data.image_url;
                 document.getElementById('pDesc').value = data.description;
-                // Ambil data size chart (perhatikan nama property dari API baru)
                 document.getElementById('pLd').value = data.ld || (data.size_charts?.[0]?.ld_produk) || '';
                 document.getElementById('pPj').value = data.panjang || (data.size_charts?.[0]?.panjang_produk) || '';
             } else {
@@ -141,47 +250,90 @@
         }
         function closeModal() { document.getElementById('pModal').style.display = 'none'; }
 
-        // Fetch List
+        // ===== SEARCH =====
+        function applySearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            if (!q) {
+                filteredProducts = [...allProducts];
+            } else {
+                filteredProducts = allProducts.filter(p => {
+                    const nameMatch = p.name.toLowerCase().includes(q);
+                    const priceMatch = ('rp ' + p.price.toLocaleString('id-ID')).toLowerCase().includes(q) || String(p.price).includes(q);
+                    const ldMatch = String(p.ld).includes(q);
+                    const pjMatch = String(p.panjang).includes(q);
+                    return nameMatch || priceMatch || ldMatch || pjMatch;
+                });
+            }
+            currentPage = 1;
+            renderPage();
+        }
+
+        // ===== LOAD & PAGINATION =====
         async function loadProducts() {
             try {
                 const res = await fetch('/api/v1/products?t=' + Date.now());
                 const data = await res.json();
-                const tbody = document.querySelector('#productTable tbody');
-                
-                if (data.products && data.products.length > 0) {
-                    tbody.innerHTML = data.products.map(p => `
-                        <tr>
-                            <td>
-                                <div class="product-info-cell">
-                                    <img src="${p.image_url}" class="product-img-mini">
-                                    <strong>${p.name}</strong>
-                                </div>
-                            </td>
-                            <td><span style="font-weight:700">Rp ${p.price.toLocaleString('id-ID')}</span></td>
-                            <td>
-                                <span class="badge-spec">LD: ${p.ld}</span>
-                                <span class="badge-spec">PJ: ${p.panjang}</span>
-                            </td>
-                            <td>
-                                <div class="action-btns">
-                                    <div class="btn-icon btn-edit" onclick="editProduct(${p.id})" title="Edit"><i class="fas fa-edit"></i></div>
-                                    <div class="btn-icon btn-delete" onclick="deleteProduct(${p.id})" title="Hapus"><i class="fas fa-trash"></i></div>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:40px;">Belum ada produk.</td></tr>';
+                if (data.products) {
+                    allProducts = data.products;
+                    filteredProducts = [...allProducts];
+                    currentPage = 1;
+                    renderPage();
                 }
             } catch (e) { console.error("Load error:", e); }
         }
 
+        function renderPage() {
+            const total = filteredProducts.length;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            currentPage = Math.min(currentPage, totalPages);
+            const start = (currentPage - 1) * pageSize;
+            const paged = filteredProducts.slice(start, start + pageSize);
+            const tbody = document.querySelector('#productTable tbody');
+
+            if (paged.length > 0) {
+                tbody.innerHTML = paged.map(p => `
+                    <tr>
+                        <td>
+                            <div class="product-info-cell">
+                                <img src="${p.image_url}" class="product-img-mini">
+                                <strong>${p.name} ${p.status === 'archived' ? '<span style="color:red">(Arsip)</span>' : ''}</strong>
+                            </div>
+                        </td>
+                        <td><span style="font-weight:700">Rp ${p.price.toLocaleString('id-ID')}</span></td>
+                        <td>
+                            <span class="badge-spec">LD: ${p.ld}</span>
+                            <span class="badge-spec">PJ: ${p.panjang}</span>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <div class="btn-icon btn-edit" onclick="editProduct(${p.id})" title="Edit"><i class="fas fa-edit"></i></div>
+                                <div class="btn-icon btn-delete" onclick="deleteProduct(${p.id})" title="Hapus">
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:40px; color:#94a3b8;">Belum ada produk.</td></tr>';
+            }
+
+            document.getElementById('paginationInfo').innerText =
+                `Halaman ${currentPage} dari ${totalPages} (${total} produk)`;
+            document.getElementById('btnPrev').disabled = currentPage <= 1;
+            document.getElementById('btnNext').disabled = currentPage >= totalPages;
+        }
+
+        function changePage(dir) { currentPage += dir; renderPage(); }
+
+        // ===== EDIT =====
         async function editProduct(id) {
             const res = await fetch(`/api/v1/products/${id}`);
             const data = await res.json();
             openModal(data.product);
         }
 
+        // ===== SAVE (Tambah / Edit) =====
         document.getElementById('pForm').onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('pId').value;
@@ -197,29 +349,82 @@
             const url = id ? `/api/v1/admin/products/update/${id}` : `/api/v1/admin/products/add`;
             const method = id ? 'PUT' : 'POST';
 
-            const res = await fetch(url, {
-                method, headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload), credentials: 'same-origin'
-            });
-            if(res.ok) { 
+            try {
+                const res = await fetch(url, {
+                    method, headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload), credentials: 'same-origin'
+                });
+                const result = await res.json();
                 closeModal();
-                loadProducts();
-                alert("Perubahan berhasil disimpan!");
+                if (res.ok && result.success !== false) {
+                    loadProducts();
+                    showInfoModal('success', 'Berhasil!', id ? 'Produk berhasil diperbarui.' : 'Produk baru berhasil ditambahkan.');
+                } else {
+                    showInfoModal('error', 'Gagal Menyimpan', result.message || 'Terjadi kesalahan saat menyimpan produk.');
+                }
+            } catch (err) {
+                closeModal();
+                showInfoModal('error', 'Kesalahan Koneksi', 'Tidak dapat terhubung ke server. Coba lagi.');
             }
         };
 
+        // ===== DELETE =====
         async function deleteProduct(id) {
-            if(confirm('Apakah Anda yakin ingin menghapus produk ini secara permanen?')) {
-                const res = await fetch(`/api/v1/admin/products/delete/${id}`, { method: 'DELETE', credentials: 'same-origin' });
-                if(res.ok) loadProducts();
-            }
+            productIdToDelete = id;
+            document.getElementById('deleteModal').style.display = 'flex';
         }
 
-        async function handleLogout() {
-            if (confirm("Keluar dari sistem admin?")) {
-                await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'same-origin' });
-                window.location.href = '/login';
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            productIdToDelete = null;
+        }
+
+        document.getElementById('confirmDeleteBtn').onclick = async function() {
+            if (!productIdToDelete) return;
+            const btn = this;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghapus...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/v1/admin/products/delete/${productIdToDelete}`, { 
+                    method: 'DELETE', credentials: 'same-origin' 
+                });
+                const result = await res.json();
+                closeDeleteModal();
+                if (result.success) {
+                    loadProducts();
+                    showInfoModal('success', 'Produk Dihapus', 'Produk berhasil dihapus dari katalog.');
+                } else {
+                    showInfoModal('error', 'Gagal Menghapus', result.message || 'Terjadi kesalahan.');
+                }
+            } catch (err) {
+                closeDeleteModal();
+                showInfoModal('error', 'Kesalahan Koneksi', 'Tidak dapat terhubung ke server.');
+            } finally {
+                btn.innerText = 'Ya, Hapus';
+                btn.disabled = false;
             }
+        };
+
+        // ===== Search Event =====
+        document.getElementById('searchInput').addEventListener('input', applySearch);
+
+        // ===== Modal Close on Background Click =====
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('deleteModal')) closeDeleteModal();
+            if (e.target === document.getElementById('infoModal')) closeInfoModal();
+            if (e.target === document.getElementById('logoutModal')) closeLogoutModal();
+        });
+
+        // ===== Logout Modal =====
+        function showLogoutModal() { document.getElementById('logoutModal').style.display = 'flex'; }
+        function closeLogoutModal() { document.getElementById('logoutModal').style.display = 'none'; }
+        async function confirmLogout() {
+            const btn = document.getElementById('confirmLogoutBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Keluar...';
+            btn.disabled = true;
+            await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'same-origin' });
+            window.location.href = '/login';
         }
 
         window.onload = loadProducts;

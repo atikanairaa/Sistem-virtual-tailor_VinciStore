@@ -2,11 +2,25 @@ from infrastructure.models.db_models import Product, SizeChart
 from extensions import db
 
 class ProductRepository:
-    def get_all_products(self):
+    def get_active_products(self):
+        """Digunakan untuk KATALOG USER (index.html)"""
+        return db.session.query(Product).filter(Product.status == 'active').all()
+
+    def get_all_products_admin(self):
+        """Digunakan untuk DASHBOARD ADMIN"""
         return db.session.query(Product).all()
 
-    def get_product_by_id(self, product_id: int):
-        return db.session.query(Product).get(product_id)
+    def get_product_by_id(self, product_id):
+        return db.session.query(Product).filter(Product.id_product == product_id).first()
+
+    def archive_product(self, product_id):
+        """Hanya menyembunyikan dari katalog, data histori tetap aman"""
+        product = self.get_product_by_id(product_id)
+        if product:
+            product.status = 'archived'
+            db.session.commit()
+            return True
+        return False
 
     def save_product(self, product: Product, ld, panjang):
         db.session.add(product)

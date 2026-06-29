@@ -738,9 +738,8 @@
         }
 
         .footer-top {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 48px;
+            display: flex;
+            flex-direction: column;
             padding: 56px 0 40px;
         }
 
@@ -750,7 +749,7 @@
             font-size: 14px;
             color: var(--text-light);
             line-height: 1.7;
-            max-width: 300px;
+            max-width: 400px;
         }
 
         .footer-socials {
@@ -816,7 +815,6 @@
         =========================== */
         @media (max-width: 1100px) {
             .product-grid { grid-template-columns: repeat(3, 1fr); }
-            .footer-top { grid-template-columns: repeat(2, 1fr); gap: 32px; }
         }
 
         @media (max-width: 860px) {
@@ -835,7 +833,6 @@
 
         @media (max-width: 480px) {
             .product-grid { grid-template-columns: 1fr; }
-            .footer-top { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -862,7 +859,7 @@
                         <i class="fas fa-th-large"></i>
                         Lihat Katalog
                     </a>
-                    <a href="javascript:void(0)" class="btn-hero-secondary auth-check" data-target="/virtual-tailor">
+                    <a href="javascript:showVirtualTailorWarning()" class="btn-hero-secondary">
                         <i class="fas fa-ruler"></i>
                         Virtual Tailor
                     </a>
@@ -977,7 +974,7 @@
                 <h3><i class="fas fa-ruler-combined" style="color:var(--accent); margin-right:10px;"></i>Tidak Yakin Ukuranmu?</h3>
                 <p>Gunakan Virtual Tailor AI kami. Scan tubuhmu dan kami hitung ukuran yang tepat secara instan.</p>
             </div>
-            <a href="javascript:void(0)" class="btn-feature auth-check" data-target="/virtual-tailor">
+            <a href="javascript:showVirtualTailorWarning()" class="btn-feature">
                 <i class="fas fa-camera"></i>
                 Coba Virtual Tailor
             </a>
@@ -999,30 +996,6 @@
                         <a href="https://shopee.co.id/vincistore.padang" class="social-btn"><i class="fas fa-shopping-bag"></i></a>
                         <a href="https://api.whatsapp.com/message/ERX2TQE45XUIH1?autoload=1&app_absent=0" class="social-btn"><i class="fab fa-whatsapp"></i></a>
                     </div>
-                </div>
-                <div class="footer-col">
-                    <h4>Belanja</h4>
-                    <ul>
-                        <li><a href="/">Semua Produk</a></li>
-                        <li><a href="/">Koleksi Terbaru</a></li>
-                        <li><a href="/">Promo & Diskon</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Layanan</h4>
-                    <ul>
-                        <li><a href="#">Virtual Tailor</a></li>
-                        <li><a href="#">Panduan Ukuran</a></li>
-                        <li><a href="#">Retur & Pengembalian</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Informasi</h4>
-                    <ul>
-                        <li><a href="#">Tentang Kami</a></li>
-                        <li><a href="#">Hubungi Kami</a></li>
-                        <li><a href="#">Kebijakan Privasi</a></li>
-                    </ul>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -1058,12 +1031,33 @@
     }
     </style>
 
+    <div id="vtWarningModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(51,35,35,0.7); backdrop-filter:blur(5px); align-items:center; justify-content:center;">
+        <div style="background:var(--white); width:90%; max-width:400px; padding:35px; border-radius:24px; text-align:center; box-shadow:var(--shadow-lg); border:1px solid var(--border); animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+            <div style="width:70px; height:70px; background:var(--bg-section); color:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:28px; border: 2px solid var(--border);">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 style="color:var(--primary); margin-bottom:12px; font-weight:800; font-size: 22px;">Pilih Produk</h3>
+            <p style="color:var(--text-light); font-size:14px; line-height:1.7; margin-bottom:30px; padding: 0 10px;">
+                Harap pilih salah satu produk terlebih dahulu untuk mencoba fitur Virtual Tailor ini.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <button onclick="document.getElementById('vtWarningModal').style.display='none'; window.location.href='#katalog';" style="background:var(--primary); color:white; padding:14px; border-radius:12px; font-weight:700; text-decoration:none; display:flex; align-items:center; justify-content:center; transition: background 0.2s; border:none; cursor:pointer;" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='var(--primary)'">
+                    Lihat Katalog Produk
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ========= State =========
         let allProducts = [];
         let filteredProducts = [];
         let currentFilter = 'all';
         let visibleCount = 8;
+
+        function showVirtualTailorWarning() {
+            document.getElementById('vtWarningModal').style.display = 'flex';
+        }
 
         // ========= Fetch Products =========
         async function loadProducts() {

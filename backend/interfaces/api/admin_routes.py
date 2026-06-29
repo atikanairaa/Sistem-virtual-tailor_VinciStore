@@ -20,9 +20,29 @@ def get_stats():
     _, admin_repo = get_repos()
     return jsonify({
         "summary": admin_repo.get_conversion_stats(),
-        "trends": admin_repo.get_daily_trends(),
         "activity": admin_repo.get_product_activity()
     })
+
+@admin_bp.route('/users', methods=['GET'])
+@login_required
+@admin_required
+def get_users():
+    _, admin_repo = get_repos()
+    return jsonify({"success": True, "data": admin_repo.get_users_list()})
+
+@admin_bp.route('/scans', methods=['GET'])
+@login_required
+@admin_required
+def get_scans():
+    _, admin_repo = get_repos()
+    return jsonify({"success": True, "data": admin_repo.get_scans_list()})
+
+@admin_bp.route('/carts', methods=['GET'])
+@login_required
+@admin_required
+def get_carts():
+    _, admin_repo = get_repos()
+    return jsonify({"success": True, "data": admin_repo.get_carts_list()})
 
 # ============ PRODUCT CRUD ============
 

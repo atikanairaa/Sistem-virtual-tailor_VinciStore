@@ -771,7 +771,7 @@
 
                     <div class="pdp-actions">
                         <button class="btn-primary-action" id="btnVirtualTailor">
-                            <i class="fas fa-ruler-combined"></i> Virtual Tailor AI
+                            <i class="fas fa-ruler-combined"></i> Cek Kesesuaian (Virtual Tailor AI)
                         </button>
                         <button class="btn-secondary-action" id="btnAddCart">
                             <i class="fas fa-cart-plus"></i> Tambahkan ke Keranjang
@@ -817,45 +817,48 @@
         }
 
         function renderProduct(p) {
+            // 1. UI State Management
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('pdpContent').style.display = 'block';
 
+            // 2. Basic Info & Branding
             document.title = p.name + " | Vinci Store";
             document.getElementById('breadcrumbProduct').innerText = p.name;
             document.getElementById('pdpTitle').innerText = p.name;
-            document.getElementById('pdpPrice').innerText = "Rp" + p.price.toLocaleString('id-ID');
-            document.getElementById('pdpDesc').innerText = p.description || '';
+            // Tambahkan spasi pada "Rp " agar estetik
+            document.getElementById('pdpPrice').innerText = "Rp " + p.price.toLocaleString('id-ID');
+            document.getElementById('pdpDesc').innerText = p.description || 'Tidak ada deskripsi.';
             
+            // 3. Image Rendering
             document.getElementById('mainImageWrap').innerHTML = `<img src="${p.image_url}" alt="${p.name}">`;
 
-            // Render Atribut Produk
+            // 4. Render Atribut Produk (Auto-detect dari deskripsi)
             const desc = (p.description || '').toLowerCase();
             document.getElementById('attrBody').innerHTML = `
                 <tr><td>Busui Friendly</td><td>${desc.includes('busui') ? '✓ Ya' : '✗ Tidak'}</td></tr>
                 <tr><td>Wudhu Friendly</td><td>${desc.includes('wudhu') ? '✓ Ya' : '✗ Tidak'}</td></tr>
+                <tr><td>Bahan</td><td>${p.description.match(/Bahan\s*:\s*([^.]+)/i)?.[1] || 'Tersedia'}</td></tr>
             `;
 
-            // --- LOGIKA PENANGKAPAN DATA UKURAN (PENTING) ---
-            // Mengecek apakah data ada di 'size_chart' (objek tunggal) atau 'size_charts' (array)
-            let sc = p.size_chart;
-            if (!sc && p.size_charts && p.size_charts.length > 0) {
-                sc = p.size_charts[0];
-            }
+            // 5. --- LOGIKA PENANGKAPAN DATA UKURAN (OPTIMIZED) ---
+            // Data sudah ada di p.ld dan p.panjang
+            // Kita gunakan fallback jika backend mengirim struktur lama
+            const chestSize = p.ld || (p.size_charts && p.size_charts[0]?.ld_produk) || "—";
+            const lengthSize = p.panjang || (p.size_charts && p.size_charts[0]?.panjang_produk) || "—";
 
-            if(sc) {
-                const ldValue = sc.ld_produk || sc.ld || "—";
-                const pjValue = sc.panjang_produk || sc.panjang || "—";
-                
-                // Update ke Card Visual
-                document.getElementById('svLD').innerText = ldValue;
-                document.getElementById('svPanjang').innerText = pjValue;
-                
-                // Update ke Baris Tabel
-                document.getElementById('tableLD').innerText = ldValue + " cm";
-                document.getElementById('tablePanjang').innerText = pjValue + " cm";
-            } else {
-                console.warn("Data size chart tidak ditemukan untuk produk ini:", p);
-            }
+            // Update ke Card Visual (Besar)
+            document.getElementById('svLD').innerText = chestSize;
+            document.getElementById('svPanjang').innerText = lengthSize;
+
+            // Update ke Baris Tabel Spesifikasi (Bawah)
+            const tableLD = document.getElementById('tableLD');
+            const tablePanjang = document.getElementById('tablePanjang');
+            
+            if (tableLD) tableLD.innerText = chestSize !== "—" ? chestSize + " cm" : "—";
+            if (tablePanjang) tablePanjang.innerText = lengthSize !== "—" ? lengthSize + " cm" : "—";
+
+            // Debugging untuk Anda (Cek di F12 Console)
+            console.log(">>> Data Produk Terkoneksi:", { name: p.name, ld: chestSize, pj: lengthSize });
         }
 
         async function checkLogin() {
@@ -869,12 +872,7 @@
                 if (window.showAuthModal) window.showAuthModal();
                 return;
             }
-            await fetch('/api/v1/session/product', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ product_id: currentProduct.id })
-            });
-            window.location.href = '/virtual-tailor';
+            window.location.href = '/virtual-tailor?product_id=' + currentProduct.id;
         };
 
         document.getElementById('btnAddCart').onclick = async () => {

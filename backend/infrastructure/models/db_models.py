@@ -22,6 +22,7 @@ class Product(db.Model):
     deskripsi = db.Column(db.Text, nullable=False)
     harga = db.Column(db.Numeric(10, 2), nullable=False)
     gambar_url = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.Enum('active', 'archived'), default='active')
 
     user = db.relationship('User', backref=db.backref('products', lazy=True))
 

@@ -153,10 +153,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getProductId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('product_id');
+    }
+
+    async function updateBreadcrumb() {
+        const productId = getProductId();
+        if (productId) {
+            const data = await api.getProduct(productId);
+            if (data && data.success && data.product) {
+                const breadcrumb = document.getElementById('vtBreadcrumb');
+                if (breadcrumb) {
+                    breadcrumb.innerHTML = `
+                        <a href="/">Beranda</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <a href="/product/${productId}">${data.product.name}</a>
+                        <i class="fas fa-chevron-right"></i>
+                        <span class="current">Virtual Tailor AI</span>
+                    `;
+                }
+            }
+        }
+    }
+
     async function performFinalAnalysis(base64Image) {
         isAnalyzing = true;
+        
+        const productId = getProductId();
+        if (!productId) {
+            ui.showToast('Pilih produk terlebih dahulu di halaman detail', 'error');
+            isAnalyzing = false;
+            stopWebcam();
+            return;
+        }
+
         ui.showToast('Menganalisis tubuh...');
-        const data = await api.analyze(base64Image, getCalibrationData());
+        const data = await api.analyze(base64Image, getCalibrationData(), productId);
         if (data && data.success) {
             ui.showToast('Analisis Selesai', 'success');
             ui.updateMeasurements(data);
@@ -190,9 +223,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // CEK VALIDASI SEBELUM ANALISA FOTO
         if (!validateHeight()) return;
 
+        const productId = getProductId();
+        if (!productId) {
+            ui.showToast('Pilih produk terlebih dahulu di halaman detail', 'error');
+            return;
+        }
+
         btnAnalyzePhoto.disabled = true;
         ui.showToast('Menganalisis foto...');
-        const data = await api.analyze(selectedImageBase64, getCalibrationData());
+        const data = await api.analyze(selectedImageBase64, getCalibrationData(), productId);
         if (data && data.success) {
             ui.updateMeasurements(data);
             btnAddToCart.style.display = 'block';
@@ -223,20 +262,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Tab Switching
     document.getElementById('tabLive').addEventListener('click', () => {
         isLiveMode = true;
+        document.getElementById('tabLive').classList.add('active');
+        document.getElementById('tabUpload').classList.remove('active');
         document.getElementById('contentLive').style.display = 'block';
         document.getElementById('contentUpload').style.display = 'none';
+        document.getElementById('contentUploadControl').style.display = 'none';
         if (isWebcamRunning) videoFeed.style.display = 'block';
         imagePreview.style.display = 'none';
     });
 
     document.getElementById('tabUpload').addEventListener('click', () => {
         isLiveMode = false;
+        document.getElementById('tabUpload').classList.add('active');
+        document.getElementById('tabLive').classList.remove('active');
         document.getElementById('contentLive').style.display = 'none';
         document.getElementById('contentUpload').style.display = 'block';
+        document.getElementById('contentUploadControl').style.display = 'block';
         stopWebcam();
         if (selectedImageBase64) imagePreview.style.display = 'block';
     });
 
     btnStartWebcam.addEventListener('click', startWebcam);
     btnStopWebcam.addEventListener('click', stopWebcam);
+    
+    // Inisialisasi Breadcrumb
+    updateBreadcrumb();
 });

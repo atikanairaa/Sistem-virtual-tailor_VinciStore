@@ -164,7 +164,7 @@ async function handleLogout() {
         const res = await fetch('/api/v1/auth/logout', { method: 'POST' });
         const data = await res.json();
         if (data.success) {
-            window.location.href = '/login';
+            window.location.href = '/';
         }
     }
 }

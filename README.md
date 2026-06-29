@@ -6,15 +6,15 @@ Sistem ini dikembangkan dengan **Flask** untuk backend, **MediaPipe** untuk dete
 
 ## 🔄 Workflow Sistem
 
-1. **Pemilihan Produk**: Pengguna memilih pakaian dari katalog yang tersedia (contoh: kemeja, jaket, kaos). Masing-masing produk memiliki target ukuran tertentu.
-2. **Metode Pengukuran**: Pengguna dapat menggunakan **Live Camera (Webcam)** atau **Upload Foto**.
-3. **Kalibrasi**: Pengguna mengatur metode kalibrasi untuk mengonversi piksel pada gambar menjadi ukuran sentimeter (cm) yang akurat. Metode yang tersedia:
-   - **Height (Rekomendasi)**: Menggunakan tinggi badan asli pengguna.
+1. **Pemilihan Produk**: Pelanggan memilih pakaian dari katalog yang tersedia (contoh: kemeja, jaket, kaos). Masing-masing produk memiliki target ukuran tertentu.
+2. **Metode Pengukuran**: Pelanggan dapat menggunakan **Live Camera (Webcam)** atau **Upload Foto**.
+3. **Kalibrasi**: Pelanggan mengatur metode kalibrasi untuk mengonversi piksel pada gambar menjadi ukuran sentimeter (cm) yang akurat. Metode yang tersedia:
+   - **Height (Rekomendasi)**: Menggunakan tinggi badan asli pelanggan.
    - **Reference Object**: Menggunakan objek referensi berukuran standar (seperti kartu KTP/ATM berukuran ~8.56cm).
-4. **Pemindaian Pose (Pose Detection)**: Sistem menggunakan MediaPipe untuk mendeteksi landmark tubuh pengguna pada gambar/kamera.
-5. **Kalkulasi Ukuran (Measurement)**: Sistem menghitung lebar bahu, lingkar dada, dan lebar pinggul pengguna berdasarkan jarak landmark yang telah dikalibrasi.
-6. **Analisis Bentuk Tubuh & Rekomendasi Fit**: Berdasarkan ukuran yang didapat, sistem menentukan bentuk tubuh pengguna (misal: *Inverted Triangle*, *Rectangle*) dan memberikan status rekomendasi kecocokan (misal: *Perfect Fit*, *Too Tight*) terhadap produk yang dipilih di awal.
-7. **Add to Cart**: Pengguna dapat melanjutkan berbelanja dengan ukuran kustom tersebut.
+4. **Pemindaian Pose (Pose Detection)**: Sistem menggunakan MediaPipe untuk mendeteksi landmark tubuh pelanggan pada gambar/kamera.
+5. **Kalkulasi Ukuran (Measurement)**: Sistem menghitung lebar bahu, lingkar dada, dan lebar pinggul pelanggan berdasarkan jarak landmark yang telah dikalibrasi.
+6. **Analisis Bentuk Tubuh & Rekomendasi Fit**: Berdasarkan ukuran yang didapat, sistem menentukan bentuk tubuh pelanggan (misal: *Inverted Triangle*, *Rectangle*) dan memberikan status rekomendasi kecocokan (misal: *Perfect Fit*, *Too Tight*) terhadap produk yang dipilih di awal.
+7. **Add to Cart**: Pelanggan dapat melanjutkan berbelanja dengan ukuran kustom tersebut.
 
 ## 📂 Struktur Repository
 
@@ -49,7 +49,7 @@ virtual_tailor/
 
 ### Penjelasan Fungsi Komponen Penting Backend:
 - **`app.py`**: Mengonfigurasi dan menjalankan server Flask, mendaftarkan blueprint API, dan me-routing akses file web statis.
-- **`interfaces/api/routes.py`**: Menangani permintaan (HTTP requests) dari pengguna seperti mengambil produk, melakukan `prescan` posisi, dan proses `analyze` gambar yang diunggah atau ditangkap kamera.
+- **`interfaces/api/routes.py`**: Menangani permintaan (HTTP requests) dari pelanggan seperti mengambil produk, melakukan `prescan` posisi, dan proses `analyze` gambar yang diunggah atau ditangkap kamera.
 - **`application/services/pose_analysis_service.py`**: Orkestrator utama analisis. Menerima gambar dari route, memerintahkan `PoseDetector` mencari landmark, mengalibrasi skala piksel, lalu meminta pengukuran ke `MeasurementService`.
 - **`application/services/measurement_service.py`**: Menghitung jarak spesifik tubuh (bahu, dada, pinggul), bentuk tubuh, serta perbandingan fit dengan baju.
 - **`infrastructure/mediapipe/pose_detector.py`**: Menjalankan library ML MediaPipe Pose Landmarker untuk mengekstraksi koordinat landmark secara akurat.

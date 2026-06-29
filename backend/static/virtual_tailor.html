@@ -139,7 +139,7 @@
 
     <main class="container">
         <!-- Breadcrumbs -->
-        <nav class="breadcrumb">
+        <nav class="breadcrumb" id="vtBreadcrumb">
             <a href="/">Beranda</a>
             <i class="fas fa-chevron-right"></i>
             <span class="current">Virtual Tailor AI</span>
@@ -253,17 +253,7 @@
     <script src="/static/js/app.js"></script>
 
     <script>
-        // Tab UI Toggle
-        document.getElementById('tabUpload').addEventListener('click', () => {
-            document.getElementById('contentLive').style.display = 'none';
-            document.getElementById('contentUploadControl').style.display = 'block';
-            document.getElementById('contentUpload').style.display = 'block';
-        });
-        document.getElementById('tabLive').addEventListener('click', () => {
-            document.getElementById('contentLive').style.display = 'block';
-            document.getElementById('contentUploadControl').style.display = 'none';
-            document.getElementById('contentUpload').style.display = 'none';
-        });
+        // (Tab logic dipindahkan ke app.js)
         document.getElementById('contentUploadControl').style.display = 'none';
 
         // -------------------------------------------------------------
@@ -279,14 +269,13 @@
             btn.disabled = true;
 
             try {
-                // 1. Ambil ID Produk yang sedang dianalisa (Dari sesi Flask)
-                const sessionRes = await fetch('/api/v1/session/product');
-                const sessionData = await sessionRes.json();
+                // 1. Ambil ID Produk yang sedang dianalisa (Dari URL)
+                const urlParams = new URLSearchParams(window.location.search);
+                const productId = urlParams.get('product_id');
                 
-                if (!sessionData.success || !sessionData.product) {
+                if (!productId) {
                     throw new Error("Produk belum dipilih. Silakan kembali ke katalog.");
                 }
-                const productId = sessionData.product.id;
 
                 // 2. Ambil nilai AI dengan aman menggunakan ID yang diberikan ui.js
                 const valFitStatus = document.getElementById('valFitStatus');

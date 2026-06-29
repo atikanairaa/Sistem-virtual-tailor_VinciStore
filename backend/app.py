@@ -119,6 +119,24 @@ def create_app():
     def admin_manage_products():
         return send_from_directory(os.path.join(app.static_folder, 'admin'), 'manage_products.html')
 
+    @app.route('/admin/users')
+    @login_required
+    @admin_required
+    def admin_users():
+        return send_from_directory(os.path.join(app.static_folder, 'admin'), 'users.html')
+
+    @app.route('/admin/scans')
+    @login_required
+    @admin_required
+    def admin_scans():
+        return send_from_directory(os.path.join(app.static_folder, 'admin'), 'scans.html')
+
+    @app.route('/admin/carts')
+    @login_required
+    @admin_required
+    def admin_carts():
+        return send_from_directory(os.path.join(app.static_folder, 'admin'), 'carts.html')
+
     # API info
     @app.route('/api')
     def api_info():
