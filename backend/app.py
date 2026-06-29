@@ -23,7 +23,7 @@ def create_app():
     # Konfigurasi Keamanan Sesi (Wajib untuk Flask-Login & Hosting)
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-    app.config['SESSION_COOKIE_SECURE'] = False # True saat hosting dengan HTTPS
+    app.config['SESSION_COOKIE_SECURE'] = os.environ.get('FLASK_ENV') == 'production' # True saat hosting dengan HTTPS (Render)
     
     # Database Configuration
     db_user = os.environ.get('DB_USER', 'root')
@@ -56,7 +56,8 @@ def create_app():
         return User.query.get(int(user_id))
     
     # Enable CORS for all routes with proper settings
-    CORS(app, origins=['*'], supports_credentials=True, methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+    allowed_origins = os.environ.get('CORS_ORIGINS', '*').split(',')
+    CORS(app, origins=allowed_origins, supports_credentials=True, methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
     
     # Register blueprints
     from interfaces.api.routes import api_bp
