@@ -27,4 +27,5 @@ EXPOSE 10000
 
 # Jalankan Gunicorn (WSGI Server Production)
 # run:app merujuk pada file run.py dan instance app di dalamnya
-CMD ["gunicorn", "--bind", "0.0.0.0:10000", "--workers", "2", "--threads", "4", "run:app"]
+# Menggunakan 1 worker dan 4 thread agar tidak kehabisan RAM (OOM) di Render Free (512MB)
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "--workers", "1", "--threads", "4", "run:app"]
