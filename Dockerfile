@@ -22,10 +22,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Salin seluruh kode aplikasi
 COPY . .
 
-# Expose port (Render biasa menggunakan port 10000 atau membaca env PORT)
-EXPOSE 10000
+# Expose port (HuggingFace Spaces secara default membutuhkan port 7860)
+EXPOSE 7860
 
 # Jalankan Gunicorn (WSGI Server Production)
 # run:app merujuk pada file run.py dan instance app di dalamnya
-# Menggunakan 1 worker dan 4 thread agar tidak kehabisan RAM (OOM) di Render Free (512MB)
-CMD ["gunicorn", "--bind", "0.0.0.0:10000", "--workers", "1", "--threads", "4", "run:app"]
+# Menggunakan 1 worker dan 4 thread untuk efisiensi di HuggingFace Spaces
+CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "1", "--threads", "4", "run:app"]
